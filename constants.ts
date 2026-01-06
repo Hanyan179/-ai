@@ -104,7 +104,7 @@ export const PERSONAL_PROJECTS: ProjectItem[] = [
       { label: "系统规模", value: "Full Stack" },
       { label: "能力", value: "System Design" }
     ],
-    images: ["/projects/content-platform/01.jpg", "/projects/content-platform/02.jpg"],
+    images: ["/projects/content-platform/01.png"],
     link: "http://layzhang.cn"
   },
   {
