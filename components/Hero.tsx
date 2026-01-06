@@ -56,7 +56,8 @@ const Hero: React.FC = () => {
             </div>
             <div>
                <div className="text-xs text-secondary uppercase tracking-widest mb-1">Applicant</div>
-               <div className="text-white font-bold text-lg">{PROFILE_DATA.role}</div>
+               <div className="text-white font-bold text-lg">{PROFILE_DATA.name}</div>
+               <div className="text-xs text-secondary/60 mt-0.5">{PROFILE_DATA.role}</div>
             </div>
             <div className="h-8 w-px bg-white/10"></div>
             <div>
