@@ -117,7 +117,7 @@ export const PERSONAL_PROJECTS: ProjectItem[] = [
       { label: "起步基础", value: "Zero Swift" },
       { label: "能力", value: "Cross-Platform" }
     ],
-    images: ["/projects/ios-app/01.jpg", "/projects/ios-app/02.jpg"]
+    images: ["/projects/ios-app/01.jpg", "/projects/ios-app/02.jpg", "/projects/ios-app/03.jpg", "/projects/ios-app/04.jpg", "/projects/ios-app/05.jpg"]
   },
   {
     id: "p4",
@@ -129,7 +129,7 @@ export const PERSONAL_PROJECTS: ProjectItem[] = [
       { label: "交付耗时", value: "3 Hours" },
       { label: "获取资源", value: "$5000+ Credits" }
     ],
-    images: ["/projects/fullstack-delivery/01.jpg"],
+    images: ["/projects/fullstack-delivery/01.png"],
     link: "http://xinan-tech.store"
   }
 ];
