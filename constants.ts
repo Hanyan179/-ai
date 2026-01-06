@@ -98,13 +98,14 @@ export const PERSONAL_PROJECTS: ProjectItem[] = [
     id: "p2",
     category: "【技术底座】全栈能力储备",
     title: "垂直领域内容生态平台",
-    description: "2025年的第一个里程碑。打破前后端分离依赖，独立完成包含“明星粉丝前台”与“资源管理后台”的完整生态。证明我具备**独立负责复杂业务系统**的全栈闭环能力。",
+    description: "2025年的第一个里程碑。打破前后端分离依赖，独立完成包含“明星粉丝前台”与“资源管理后台”的完整生态。证明我具备**独立负责复杂业务系统**的全栈闭环能力。\n\n> **⚠️ 注意：** 这是一个测试环境，未开启CDN加速，因此部分资源可能加载较慢或未加载。",
     techStack: ["Java / SpringBoot", "React / Ant Design", "MySQL / Redis"],
     metrics: [
       { label: "系统规模", value: "Full Stack" },
       { label: "能力", value: "System Design" }
     ],
-    images: ["/placeholder-web-1.jpg", "/placeholder-web-2.jpg"]
+    images: ["/placeholder-web-1.jpg", "/placeholder-web-2.jpg"],
+    link: "http://layzhang.cn"
   },
   {
     id: "p3",
