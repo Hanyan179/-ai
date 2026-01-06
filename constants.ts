@@ -9,7 +9,7 @@ export const HERO_DATA = {
 };
 
 export const PROFILE_DATA: ProfileData = {
-  name: "申请人", // You can replace this
+  name: "Hansen / 闫涵", // Updated name
   role: "AI 研发工程师",
   slogan: "以确定性的工程逻辑，驾驭不确定的 AI 概率",
   standards: [
