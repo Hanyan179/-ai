@@ -47,7 +47,7 @@ export const MVP_PROJECT: ProjectItem = {
     { label: "交付性质", value: "Logic Verification" },
     { label: "完成度", value: "MVP Draft" }
   ],
-  images: ["/placeholder-demo-1.jpg", "/placeholder-demo-2.jpg"] 
+  images: ["/projects/mvp/01.jpg", "/projects/mvp/02.jpg"] 
 };
 
 // MVP Analysis Data (The "Why" and "Future")
@@ -104,7 +104,7 @@ export const PERSONAL_PROJECTS: ProjectItem[] = [
       { label: "系统规模", value: "Full Stack" },
       { label: "能力", value: "System Design" }
     ],
-    images: ["/placeholder-web-1.jpg", "/placeholder-web-2.jpg"],
+    images: ["/projects/content-platform/01.jpg", "/projects/content-platform/02.jpg"],
     link: "http://layzhang.cn"
   },
   {
@@ -117,7 +117,7 @@ export const PERSONAL_PROJECTS: ProjectItem[] = [
       { label: "起步基础", value: "Zero Swift" },
       { label: "能力", value: "Cross-Platform" }
     ],
-    images: ["/placeholder-ios-1.jpg", "/placeholder-ios-2.jpg"]
+    images: ["/projects/ios-app/01.jpg", "/projects/ios-app/02.jpg"]
   },
   {
     id: "p4",
@@ -129,7 +129,7 @@ export const PERSONAL_PROJECTS: ProjectItem[] = [
       { label: "交付耗时", value: "3 Hours" },
       { label: "获取资源", value: "$5000+ Credits" }
     ],
-    images: ["/placeholder-ops-1.jpg"],
+    images: ["/projects/fullstack-delivery/01.jpg"],
     link: "http://xinan-tech.store"
   }
 ];
