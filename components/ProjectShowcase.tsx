@@ -60,7 +60,7 @@ export const ProjectCard: React.FC<{ project: ProjectItem; index: number }> = ({
     <div className="grid lg:grid-cols-2 gap-12 items-center group">
       {/* Media Area (Video or Image Gallery) */}
       <div className={`relative ${index % 2 === 1 ? 'lg:order-2' : ''}`}>
-        <div className="aspect-[16/10] rounded-3xl overflow-hidden border border-white/10 relative bg-surfaceHighlight/20 shadow-2xl group-hover:border-white/20 transition-colors">
+        <div className={`${project.id === 'p3' ? 'aspect-[9/19] max-w-sm mx-auto' : 'aspect-[16/10]'} rounded-3xl overflow-hidden border border-white/10 relative bg-surfaceHighlight/20 shadow-2xl group-hover:border-white/20 transition-colors`}>
           
           {project.video ? (
             /* Video Player Logic */
