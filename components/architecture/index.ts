@@ -11,6 +11,9 @@ export { default as DraggableCanvas } from './DraggableCanvas';
 // Value analysis view
 export { default as CapabilityValueView } from './CapabilityValueView';
 
+// Demo flow view
+export { default as DemoFlowView } from './DemoFlowView';
+
 // Legacy view components (deprecated - use UnifiedCanvas instead)
 export { default as BlackBoxView } from './BlackBoxView';
 export { default as WhiteBoxView } from './WhiteBoxView';

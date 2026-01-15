@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import MindMap from './MindMap';
 import WorkflowMap from './WorkflowMap';
 import CapabilityValueView from './CapabilityValueView';
+import DemoFlowView from './DemoFlowView';
 
-type ViewType = 'capability' | 'workflow' | 'value-analysis';
+type ViewType = 'capability' | 'workflow' | 'value-analysis' | 'demo-flow';
 
 const VIEW_CONFIG = {
   capability: {
@@ -20,6 +21,11 @@ const VIEW_CONFIG = {
     title: '能力价值分析',
     desc: '基于行业洞察的能力分层：区分护城河与耗材',
     label: '💎 价值分析',
+  },
+  'demo-flow': {
+    title: 'Demo 演示流转',
+    desc: '用户与 AI 智能助手交互的完整流程：导航、查询、填表、跨页面任务',
+    label: '🎬 Demo演示',
   },
 };
 
@@ -72,6 +78,7 @@ const ArchitectureDiagram: React.FC = () => {
       {viewType === 'capability' && <MindMap />}
       {viewType === 'workflow' && <WorkflowMap />}
       {viewType === 'value-analysis' && <CapabilityValueView />}
+      {viewType === 'demo-flow' && <DemoFlowView />}
     </div>
   );
 };
