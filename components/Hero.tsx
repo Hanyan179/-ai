@@ -1,10 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ChevronDown, User, FileText } from 'lucide-react';
+import { ChevronDown, User, Layers } from 'lucide-react';
 import { HERO_DATA, PROFILE_DATA } from '../constants';
 import SectionWrapper from './SectionWrapper';
 
-const Hero: React.FC = () => {
+interface HeroProps {
+  onNavigateToArchitecture?: () => void;
+}
+
+const Hero: React.FC<HeroProps> = ({ onNavigateToArchitecture }) => {
   return (
     <SectionWrapper className="bg-background relative">
       <div className="flex flex-col items-start justify-center h-full max-w-5xl">
@@ -65,6 +69,23 @@ const Hero: React.FC = () => {
                <div className="text-accent font-medium">AI Engineering</div>
             </div>
         </motion.div>
+
+        {/* Architecture Page Entry Button */}
+        {onNavigateToArchitecture && (
+          <motion.button
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            onClick={onNavigateToArchitecture}
+            className="mt-6 flex items-center gap-3 px-5 py-3 rounded-xl bg-accent/10 border border-accent/30 text-accent hover:bg-accent/20 hover:border-accent/50 transition-all duration-200 group"
+          >
+            <Layers size={20} className="group-hover:scale-110 transition-transform" />
+            <span className="font-medium">查看 Agent 架构设计</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </motion.button>
+        )}
 
       </div>
 

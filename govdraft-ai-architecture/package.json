@@ -1,5 +1,5 @@
 {
-  "name": "core-talent-application",
+  "name": "govdraft-ai-architecture",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,11 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "framer-motion": "^12.24.0",
-    "lucide-react": "^0.562.0",
-    "react": "^19.2.3",
     "react-dom": "^19.2.3",
-    "reactflow": "^11.11.4"
+    "react": "^19.2.3",
+    "lucide-react": "^0.562.0"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
