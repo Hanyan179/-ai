@@ -745,5 +745,5 @@ export const DEMO_OUTPUTS: DemoOutput[] = [
 // ========== Skills Marketplace Links ==========
 
 export const SKILLS_MARKETPLACES = [
-  { name: 'Agent Skills Marketplace', url: 'https://agentskills.to', desc: '社区驱动的 Skills 集合，支持 Claude Code、Cursor、Codex CLI 等主流 AI 编程工具' },
+  { name: 'Agent Skills Marketplace', url: 'https://skillsmp.com', desc: '社区驱动的 Skills 集合，支持 Claude Code、Cursor、Codex CLI 等主流 AI 编程工具' },
 ];
