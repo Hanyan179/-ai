@@ -655,6 +655,42 @@ function S9_Conclusion() {
         </p>
         <p className="text-secondary text-2xl max-w-3xl mx-auto">单纯的手写代码能力会被无限贬值，未来的核心竞争力在于人人都是产品经理，都要具备极强的结构性思维。</p>
       </motion.div>
+
+      {/* 这个网站本身就是例子 */}
+      <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
+        className="bento-card rounded-2xl p-8 md:p-10 mb-14 border border-accent/20 bg-accent/5">
+        <div className="flex items-center gap-3 mb-6">
+          <Monitor size={22} className="text-accent" />
+          <h3 className="text-white font-bold text-xl">其实，这个网站本身就是一个完整的例子</h3>
+        </div>
+        <div className="space-y-8">
+          {/* 类比1: 可视化 = Vibe Coding */}
+          <div className="flex items-start gap-4">
+            <div className="w-10 h-10 rounded-xl bg-yellow-400/10 flex items-center justify-center text-yellow-400 text-sm font-bold shrink-0">壳</div>
+            <div>
+              <div className="text-white font-semibold text-base mb-2">网站的可视化界面 → Vibe Coding</div>
+              <p className="text-secondary text-sm leading-relaxed">你现在看到的这个页面，UI、动画、布局，全部是 AI 直接生成的。这就是前端简单场景的体现——不需要 Skills，AI 凭训练数据就能搞定。对应之前说的"前端部分比较容易实现"。</p>
+            </div>
+          </div>
+          {/* 类比2: 内容 = Skills 沉淀 */}
+          <div className="flex items-start gap-4">
+            <div className="w-10 h-10 rounded-xl bg-green-400/10 flex items-center justify-center text-green-400 text-sm font-bold shrink-0">魂</div>
+            <div>
+              <div className="text-white font-semibold text-base mb-2">网站的内容 → Skills 知识沉淀</div>
+              <p className="text-secondary text-sm leading-relaxed">但网站里的内容——上午做的 DSFA 环境搭建启动，下午做的 DreamWeb 党建 Skills 和 Demo 测试——这些才是核心。晚上写这个网站的时候，内容虽然经过了改造和重新组织，但灵魂还是白天已经沉淀好的东西。</p>
+            </div>
+          </div>
+          {/* 类比3: 这就是 AI 开发的模式 */}
+          <div className="flex items-start gap-4">
+            <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center text-accent text-sm font-bold shrink-0">≈</div>
+            <div>
+              <div className="text-white font-semibold text-base mb-2">这就是 AI 开发的完整模式</div>
+              <p className="text-secondary text-sm leading-relaxed">先有知识沉淀（白天写 Skills），再基于知识产出（晚上 AI 生成网站）。到时候让 AI 帮我们开发业务，也是一样的——AI 利用我们写好的 Skills，再进行开发。有了沉淀，才有产出。</p>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
       <div className="bento-card rounded-2xl p-8 mb-12">
         <h3 className="text-white font-bold text-xl mb-8 text-center">工作重心将彻底转向</h3>
         <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
