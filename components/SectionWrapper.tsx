@@ -9,7 +9,7 @@ interface SectionWrapperProps {
 
 const SectionWrapper: React.FC<SectionWrapperProps> = ({ children, className = "", id }) => {
   return (
-    <section id={id} className={`min-h-screen flex flex-col justify-center py-24 px-8 md:px-20 relative overflow-hidden ${className}`}>
+    <section id={id} className={`min-h-screen flex flex-col justify-start pt-32 pb-24 px-8 md:px-20 relative overflow-hidden ${className}`}>
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
