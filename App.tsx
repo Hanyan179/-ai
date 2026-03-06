@@ -8,7 +8,7 @@ import {
   ChevronDown, BookOpen, Database, Code2, FileText,
   Layers, GitBranch, Search, Shield, PenTool,
   Zap, ArrowRight, MessageSquare, ExternalLink,
-  Route, Cpu, Monitor, Terminal, X
+  Route, Cpu, Monitor, Terminal, X, Sparkles
 } from 'lucide-react';
 
 const ProgressBar = () => {
@@ -63,10 +63,11 @@ export default function App() {
         <S3_DocAsset />
         <S4_TwoPaths />
         <S5_SceneDef />
-        <S7_DemoOutput />
         <S6_SkillsGallery dsfaSkills={dsfaSkills} p2340Skills={p2340Skills} generalSkills={generalSkills} onSelect={setSelectedSkill} />
+        <S7_DemoOutput />
         <S8_ToolCompare />
-        <S9_Conclusion />
+        <S9_ToolRecommend />
+        <S10_Conclusion />
       </main>
       <footer className="py-8 px-8 text-center text-secondary/40 text-xs border-t border-white/5">DreamWeb AI Coding Demo · 2025</footer>
     </div>
@@ -166,6 +167,7 @@ function S2_Evolution() {
             </div>
             <div className="flex flex-col md:flex-row gap-3 md:gap-6">
               {[
+                { label: 'Claude 官方 Skills 最佳实践规范', url: 'https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices' },
                 { label: 'Claude 官方 Skills 介绍', url: 'https://www.anthropic.com/news/skills' },
                 { label: 'Claude 工程博客深入解析', url: 'https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills' },
                 { label: 'Trae 官方 Skill 最佳实践', url: 'https://docs.trae.cn/ide/best-practice-for-how-to-write-a-good-skill' },
@@ -406,6 +408,7 @@ function S6_SkillsGallery({ dsfaSkills, p2340Skills, generalSkills, onSelect }: 
           公开 Skills 市场（社区资源）
         </h3>
         <p className="text-secondary text-sm mb-6">虽然通用 Skills 对我们企业级框架帮助有限，但可以作为编写参考和灵感来源。</p>
+        <div className="flex flex-col gap-3">
         {SKILLS_MARKETPLACES.map((m, i) => (
           <a key={i} href={m.url} target="_blank" rel="noopener noreferrer"
             className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-accent/30 hover:bg-accent/5 transition-all group">
@@ -416,6 +419,7 @@ function S6_SkillsGallery({ dsfaSkills, p2340Skills, generalSkills, onSelect }: 
             </div>
           </a>
         ))}
+        </div>
       </div>
     </SectionWrapper>
   );
@@ -639,12 +643,77 @@ function S8_ToolCompare() {
   );
 }
 
-/* ===== 八、总结与认知升级 ===== */
-function S9_Conclusion() {
+/* ===== 八、目前的工具使用推荐介绍 ===== */
+function S9_ToolRecommend() {
   return (
     <SectionWrapper>
       <div className="flex flex-col items-center text-center mb-16">
-        <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">八、总结与认知升级</span>
+        <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">八、目前的工具使用推荐</span>
+        <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">工具获取与使用教程</h2>
+        <p className="text-secondary text-2xl max-w-3xl">目前推荐的 AI 编程工具获取方式，<br className="hidden md:block" />以及低成本使用方案。</p>
+      </div>
+      <div className="grid md:grid-cols-2 gap-10">
+        {/* Gemini + 学生会员 */}
+        <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
+          className="bento-card rounded-2xl p-8 border-l-4 border-l-blue-400/50">
+          <div className="flex items-center gap-3 mb-6">
+            <Sparkles size={24} className="text-blue-400" />
+            <span className="text-white font-bold text-xl">Google Gemini</span>
+            <span className="bg-blue-400/10 text-blue-400 text-xs px-2 py-0.5 rounded-full">推荐</span>
+          </div>
+          <p className="text-secondary text-base leading-relaxed mb-6">Google 的 AI 模型，能力强大，通过学生会员可以极低成本获取高级功能。</p>
+          <div className="space-y-4">
+            <div className="bg-white/5 rounded-xl p-5">
+              <p className="text-white text-sm font-semibold mb-3">学生会员获取教程</p>
+              <div className="space-y-2 text-secondary text-sm">
+                <div className="flex items-start gap-2"><span className="text-accent font-bold shrink-0">1.</span><span>准备梯子（科学上网工具）</span></div>
+                <div className="flex items-start gap-2"><span className="text-accent font-bold shrink-0">2.</span><span>注册 Google 账号</span></div>
+                <div className="flex items-start gap-2"><span className="text-accent font-bold shrink-0">3.</span><span>淘宝搜索"Google 学生认证"，购买学生身份认证服务</span></div>
+                <div className="flex items-start gap-2"><span className="text-accent font-bold shrink-0">4.</span><span>完成认证后开通学生会员</span></div>
+              </div>
+            </div>
+            <div className="bg-green-400/10 rounded-xl p-4 flex items-center justify-between">
+              <span className="text-green-400 text-sm font-semibold">💰 费用</span>
+              <span className="text-white text-lg font-bold">约 ¥50 / 年</span>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Kiro IDE + 阿里云 */}
+        <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
+          className="bento-card rounded-2xl p-8 border-l-4 border-l-green-400/50">
+          <div className="flex items-center gap-3 mb-6">
+            <Monitor size={24} className="text-green-400" />
+            <span className="text-white font-bold text-xl">Kiro IDE</span>
+            <span className="bg-green-400/10 text-green-400 text-xs px-2 py-0.5 rounded-full">本次使用</span>
+          </div>
+          <p className="text-secondary text-base leading-relaxed mb-6">AWS 出品的 AI IDE，内置 Skills 机制，本次 Demo 就是用 Kiro 完成的。</p>
+          <div className="space-y-4">
+            <div className="bg-white/5 rounded-xl p-5">
+              <p className="text-white text-sm font-semibold mb-3">会员获取方式</p>
+              <div className="space-y-2 text-secondary text-sm">
+                <div className="flex items-start gap-2"><span className="text-accent font-bold shrink-0">1.</span><span>通过阿里云国际版注册 AWS 账号</span></div>
+                <div className="flex items-start gap-2"><span className="text-accent font-bold shrink-0">2.</span><span>使用 AWS 账号登录 Kiro IDE</span></div>
+                <div className="flex items-start gap-2"><span className="text-accent font-bold shrink-0">3.</span><span>开通会员，享受完整的 AI 辅助编程功能</span></div>
+              </div>
+            </div>
+            <div className="bg-yellow-400/10 rounded-xl p-4">
+              <p className="text-yellow-400 text-sm font-semibold mb-2">💡 提示</p>
+              <p className="text-secondary text-xs leading-relaxed">阿里云国际版可以直接用支付宝付款，免去信用卡的麻烦。Kiro 有免费额度可以先体验。</p>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </SectionWrapper>
+  );
+}
+
+/* ===== 九、总结与认知升级 ===== */
+function S10_Conclusion() {
+  return (
+    <SectionWrapper>
+      <div className="flex flex-col items-center text-center mb-16">
+        <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">九、总结与认知升级</span>
         <h2 className="text-5xl md:text-6xl font-bold text-white mb-8">核心认知升级</h2>
       </div>
       {/* 金句 */}

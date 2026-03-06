@@ -627,7 +627,6 @@ export const TOOLS: ToolInfo[] = [
 
 // ========== Demo Output ==========
 
-// DSFA 项目启动 Demo
 export const DEMO_DSFA = {
   name: 'DSFA 中小企业项目启动',
   desc: '让 AI 理解并启动一个完全陌生的 DSFA 项目，验证 Skill 文档能否承载项目启动所需的知识。',
@@ -635,7 +634,6 @@ export const DEMO_DSFA = {
   skillsUsed: ['project-overview', 'project-startup', 'dsfa-framework-rules'],
 };
 
-// DreamWeb DJ 四个场景 — 数据来源：AI-Coding-Demo-Report 02/03/04
 export const DEMO_OUTPUTS: DemoOutput[] = [
   {
     name: '列表按钮打开"其他信息"表单',
@@ -646,25 +644,16 @@ export const DEMO_OUTPUTS: DemoOutput[] = [
       { round: 1, text: '列表 241011153457h9oDes5p3yoJZxsNBDg 需要增加一个自定义点击事件，点击后打开该党员的「其他信息」表单。' },
       { round: 2, text: '按钮名称是 limengshabi，表单 ID 你自己搜索去。' },
     ],
-    skillsUsed: [
-      'p2340-form-dev/skill.md',
-      'p2340-form-dev/reference/form-events.md',
-      'p2340-form-dev/reference/code-templates.md',
-      'p2340-form-dev/reference/module-info-flow.md',
-    ],
+    skillsUsed: ['p2340-form-dev/skill.md', 'p2340-form-dev/reference/form-events.md', 'p2340-form-dev/reference/code-templates.md', 'p2340-form-dev/reference/module-info-flow.md'],
     aiSteps: [
-      '通过列表 ID 推导 JS 文件路径：src/main/webapp/p1109/{moduleId}/js/{listId}.js',
-      '读取同模块另一个列表 JS，发现已有 testopen 事件（打开"身份信息"表单），提取代码模式',
-      '在模块 JS 目录下搜索「其他信息」关键字，定位表单 ID：220805101528EEqOGE3F0vJngSpREmQ',
-      '复制 testopen 模式，替换事件名为 limengshabi、customXForm 为其他信息表单 ID、窗口标题为"其他信息"',
+      '通过列表 ID 推导 JS 文件路径',
+      '读取同模块另一个列表 JS，发现已有 testopen 事件，提取代码模式',
+      '在模块 JS 目录下搜索「其他信息」关键字，定位表单 ID',
+      '复制 testopen 模式，替换事件名和表单 ID',
       '代码插入到已有 custom1、custom2 事件之后',
     ],
-    files: [
-      '241011153457h9oDes5p3yoJZxsNBDg.js（目标列表 JS，代码写入此文件）',
-      '230111180941547caFAYhBEHB64wtll.js（同模块另一列表，参考 testopen 代码模式）',
-      '220805101528EEqOGE3F0vJngSpREmQ.js（"其他信息"表单 JS，提取表单 ID）',
-    ],
-    note: '第一轮 AI 留了占位符（没主动搜索表单 ID、自行假设了按钮名），第二轮用户明确后一次完成。理想情况下应一轮搞定。',
+    files: ['241011153457h9oDes5p3yoJZxsNBDg.js', '230111180941547caFAYhBEHB64wtll.js', '220805101528EEqOGE3F0vJngSpREmQ.js'],
+    note: '第一轮 AI 留了占位符（没主动搜索表单 ID），第二轮用户明确后一次完成。',
   },
   {
     name: '列表过滤：只显示有身份证号的党员',
@@ -672,28 +661,19 @@ export const DEMO_OUTPUTS: DemoOutput[] = [
     lines: 2,
     rounds: 4,
     myWords: [
-      { round: 1, text: '241011153457h9oDes5p3yoJZxsNBDg 这个列表我需要进入的时候增加过滤条件。我只要有身份证的数据。没有值的过滤' },
+      { round: 1, text: '这个列表我需要进入的时候增加过滤条件。我只要有身份证的数据。' },
       { round: 2, text: '自己搜索去。' },
       { round: 3, text: '如果是管理员的话也需要过滤的' },
     ],
-    skillsUsed: [
-      'p2340-form-dev/skill.md',
-      'p2340-form-dev/reference/code-templates.md',
-      'p2340-form-dev/reference/backend-rules.md',
-    ],
+    skillsUsed: ['p2340-form-dev/skill.md', 'p2340-form-dev/reference/code-templates.md', 'p2340-form-dev/reference/backend-rules.md'],
     aiSteps: [
-      '通过列表 ID 搜索代码，定位后端列表组件 List_241011153457h9oDes5p3yoJZxsNBDg.java',
-      '搜索项目中「身份证」关键字，在 PartyOrgMemberEntity.java 中确认字段名为 CARDID',
-      '分析 setCustomWhere 方法中的管理员判断逻辑：管理员走提前 return，非管理员追加组织范围条件',
-      '将 CARDID IS NOT NULL and CARDID != \'\' 条件加在管理员判断之前，确保所有用户都生效',
+      '通过列表 ID 搜索代码，定位后端列表组件',
+      '搜索项目中「身份证」关键字，确认字段名为 CARDID',
+      '分析 setCustomWhere 方法中的管理员判断逻辑',
+      '将 CARDID IS NOT NULL 条件加在管理员判断之前',
     ],
-    files: [
-      'List_241011153457h9oDes5p3yoJZxsNBDg.java（修改 setCustomWhere 方法）',
-      'PartyOrgMemberEntity.java（确认身份证字段名 CARDID）',
-      'PartyOrgMemberDaoImpl.java（确认查询中表别名 x.CARDID）',
-      'ProBaseCustomList.java（列表基类，确认方法签名）',
-    ],
-    note: '第一轮 AI 反问了身份证字段名（不该问），第二轮自己搜到了。第三轮用户发现管理员分支漏了过滤。理想情况下第一轮就应一次性搞定。',
+    files: ['List_241011153457h9oDes5p3yoJZxsNBDg.java', 'PartyOrgMemberEntity.java', 'PartyOrgMemberDaoImpl.java', 'ProBaseCustomList.java'],
+    note: '第一轮 AI 反问了身份证字段名（不该问），第三轮用户发现管理员分支漏了过滤。',
   },
   {
     name: 'Excel 导出：组织身份证导出',
@@ -701,43 +681,28 @@ export const DEMO_OUTPUTS: DemoOutput[] = [
     lines: 87,
     rounds: 1,
     myWords: [
-      { round: 1, text: '列表 241011153457h9oDes5p3yoJZxsNBDg 需要增加一个自定义按钮3（custom3），功能是「身份证导出」，将列表中有身份证号的党员数据导出为 Excel 文件，导出文件名为「组织身份证」。' },
+      { round: 1, text: '列表需要增加一个自定义按钮3（custom3），功能是「身份证导出」，将有身份证号的党员数据导出为 Excel。' },
     ],
-    skillsUsed: [
-      'docs/05-excel-import-export.md',
-      'docs/06-frontend-development.md',
-    ],
+    skillsUsed: ['docs/05-excel-import-export.md', 'docs/06-frontend-development.md'],
     aiSteps: [
       '查阅 Excel 导出规范文档和前端按钮规范文档',
-      '在 PartyOrgMemberController.java 中搜索已有导出方法（orgExport、memberExport 等），提取导出模式',
-      '重点阅读 memberExport 完整实现：Controller → Service → DAO 查询 → HSSFWorkbook 构建 → response 输出流',
-      '阅读 DAO 层 builderTemplateMemberImport()，了解主表 party_org_member、关联表 party_org_dept、可用字段',
-      '确定修改范围：Service 接口 + 实现 + Controller + 前端 JS，共 4 个文件',
-      '复制 memberExport 模式，简化为 4 列（序号、姓名、所在党支部、公民身份证号），去掉复杂合并单元格',
-      '前端 JS 添加 custom3 工具栏按钮，通过 window.location.href 触发下载',
+      '搜索已有导出方法，提取导出模式',
+      '阅读 DAO 层，了解主表和关联表、可用字段',
+      '确定修改范围：Service 接口 + 实现 + Controller + 前端 JS',
+      '复制 memberExport 模式，简化为 4 列',
+      '前端 JS 添加 custom3 工具栏按钮',
     ],
-    files: [
-      'PartyOrgMemberService.java（新增 cardIdExport 方法声明）',
-      'PartyOrgMemberServiceImpl.java（新增 cardIdExport 实现，约 50 行）',
-      'PartyOrgMemberController.java（新增 /cardIdExport 接口）',
-      '241011153457h9oDes5p3yoJZxsNBDg.js（新增 custom3 按钮事件）',
-    ],
-    note: '一次性完成，无需额外交互。原因：需求明确、同模块已有 memberExport 可直接复制简化、数据源清晰。',
+    files: ['PartyOrgMemberService.java', 'PartyOrgMemberServiceImpl.java', 'PartyOrgMemberController.java', '241011153457h9oDes5p3yoJZxsNBDg.js'],
+    note: '一次性完成，无需额外交互。原因：需求明确、同模块已有可直接复制简化的模式。',
   },
   {
     name: '依赖管理：pom.xml 新增依赖',
     desc: 'pom.xml 新增 Apache POI 依赖',
     lines: 6,
     rounds: 1,
-    myWords: [
-      { round: 1, text: '项目缺少 Excel 导出的依赖，帮我加上。' },
-    ],
+    myWords: [{ round: 1, text: '项目缺少 Excel 导出的依赖，帮我加上。' }],
     skillsUsed: ['dsfa-framework-rules'],
-    aiSteps: [
-      '检查现有 pom.xml 依赖',
-      '确认需要 Apache POI 相关依赖',
-      '在对应模块的 pom.xml 中添加依赖声明',
-    ],
+    aiSteps: ['检查现有 pom.xml 依赖', '确认需要 Apache POI 相关依赖', '在对应模块的 pom.xml 中添加依赖声明'],
     files: ['pom.xml'],
   },
 ];
@@ -745,5 +710,8 @@ export const DEMO_OUTPUTS: DemoOutput[] = [
 // ========== Skills Marketplace Links ==========
 
 export const SKILLS_MARKETPLACES = [
-  { name: 'Agent Skills Marketplace', url: 'https://skillsmp.com', desc: '社区驱动的 Skills 集合，支持 Claude Code、Cursor、Codex CLI 等主流 AI 编程工具' },
+  { name: 'Agent Skills Marketplace', url: 'https://agentskills.to', desc: '社区驱动的 Skills 市场，支持 Claude Code、Cursor、Amp 等' },
+  { name: 'Skill Registry', url: 'https://skillregistry.io', desc: 'SKILLS.md 文件注册中心，支持 Claude、ChatGPT 等' },
+  { name: 'Agent Skills Index', url: 'https://agentskillsindex.com', desc: 'Skills 索引目录' },
+  { name: 'askill.sh', url: 'https://askill.sh', desc: 'Skills 质量评分注册中心，按安全性、清晰度、可复用性评分' },
 ];
