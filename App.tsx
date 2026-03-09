@@ -597,7 +597,7 @@ function S8_ToolCompare() {
   return (
     <SectionWrapper>
       <div className="flex flex-col items-center text-center mb-16">
-        <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">七、工具形态的对比与选择</span>
+        <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">七、工具形态与使用方案</span>
         <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">AI IDE vs AI CLI</h2>
         <p className="text-secondary text-2xl max-w-3xl">目前 AI 辅助编程工具主要分为两类，<br className="hidden md:block" />我们需要认清它们的优缺点。</p>
       </div>
@@ -615,28 +615,42 @@ function S8_ToolCompare() {
           <div><span className="text-danger text-sm font-semibold">缺点：</span><p className="text-secondary text-base mt-2 leading-relaxed">门槛高，需要开发者具备极强的任务拆解能力和系统大局观，并且需要时刻保持"心流状态"和"跳跃状态"，身累心累，打字累，思考累。</p></div>
         </motion.div>
       </div>
-      {/* 工具定价表 */}
-      <div className="bento-card rounded-2xl overflow-hidden">
-        <div className="px-6 py-4 border-b border-white/10"><span className="text-secondary text-sm font-medium">主流 AI Coding IDE 定价参考</span></div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-base">
-            <thead><tr className="border-b border-white/10">
-              <th className="text-left px-6 py-4 text-secondary text-sm font-medium">工具</th>
-              <th className="text-left px-6 py-4 text-secondary text-sm font-medium">厂商</th>
-              <th className="text-left px-6 py-4 text-secondary text-sm font-medium">免费版</th>
-              <th className="text-left px-6 py-4 text-secondary text-sm font-medium">付费版</th>
-              <th className="text-left px-6 py-4 text-secondary text-sm font-medium">备注</th>
-            </tr></thead>
-            <tbody>{TOOLS.map((t, i) => (
-              <tr key={i} className="border-b border-white/5 last:border-0 hover:bg-white/[0.02]">
-                <td className="px-6 py-4 text-white font-medium">{t.name}</td>
-                <td className="px-6 py-4 text-secondary">{t.vendor}</td>
-                <td className="px-6 py-4 text-secondary">{t.free}</td>
-                <td className="px-6 py-4 text-secondary">{t.paid}</td>
-                <td className="px-6 py-4 text-secondary text-sm">{t.note}</td>
-              </tr>
-            ))}</tbody>
-          </table>
+      {/* AI IDE 使用方案 */}
+      <div className="bento-card rounded-2xl overflow-hidden mb-10">
+        <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between">
+          <span className="text-white text-base font-semibold">AI Coding IDE 三级使用方案</span>
+          <span className="text-secondary text-xs">从国内免费到世界顶级，按层级递进</span>
+        </div>
+        <div className="grid md:grid-cols-3 gap-0 divide-x divide-white/5">
+          {TOOLS.map((t, i) => {
+            const tierColors = ['border-slate-400/30', 'border-blue-400/50', 'border-accent/50'];
+            const tierLabels = ['Tier 1 · 国内免费', 'Tier 2 · 谷歌方案', 'Tier 3 · 亚马逊方案'];
+            const tierBadgeColors = ['bg-slate-400/10 text-slate-400', 'bg-blue-400/10 text-blue-400', 'bg-accent/10 text-accent'];
+            return (
+              <div key={i} className={`p-6 border-t-4 ${tierColors[i]} ${i === 2 ? 'bg-accent/[0.03]' : ''}`}>
+                <div className="flex items-center justify-between mb-4">
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${tierBadgeColors[i]}`}>{tierLabels[i]}</span>
+                  <span className="text-secondary text-xs">Tier {t.tier}</span>
+                </div>
+                <h3 className="text-white font-bold text-xl mb-1">{t.name}</h3>
+                <p className="text-secondary text-sm mb-4">{t.vendor}</p>
+                <div className="space-y-3 mb-5">
+                  <div className="flex justify-between text-sm"><span className="text-secondary">费用</span><span className="text-green-400 font-semibold">{t.free}</span></div>
+                  <div className="flex justify-between text-sm"><span className="text-secondary">AI 模型</span><span className="text-white">{t.aiModel}</span></div>
+                  <div className="text-sm"><span className="text-secondary">前提条件：</span><span className="text-white">{t.requirement}</span></div>
+                </div>
+                <p className="text-secondary text-xs leading-relaxed border-t border-white/5 pt-3">{t.note}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      {/* 国内编程模型推荐 */}
+      <div className="bento-card rounded-2xl p-6 flex items-center gap-4">
+        <Sparkles size={20} className="text-yellow-400 shrink-0" />
+        <div>
+          <span className="text-white text-sm font-semibold">国内编程模型推荐：</span>
+          <span className="text-secondary text-sm ml-2">目前国内较好的编程大模型是 <span className="text-white font-medium">GLM（智谱）</span>，在 Trae 中可直接使用。</span>
         </div>
       </div>
     </SectionWrapper>
@@ -648,59 +662,78 @@ function S9_ToolRecommend() {
   return (
     <SectionWrapper>
       <div className="flex flex-col items-center text-center mb-16">
-        <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">八、目前的工具使用推荐</span>
-        <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">工具获取与使用教程</h2>
-        <p className="text-secondary text-2xl max-w-3xl">目前推荐的 AI 编程工具获取方式，<br className="hidden md:block" />以及低成本使用方案。</p>
+        <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">八、AI IDE 使用方案</span>
+        <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">三级方案详细说明</h2>
+        <p className="text-secondary text-2xl max-w-3xl">从国内免费到世界顶级模型，<br className="hidden md:block" />三个层级按需选择。</p>
       </div>
-      <div className="grid md:grid-cols-2 gap-10">
-        {/* Gemini + 学生会员 */}
-        <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
-          className="bento-card rounded-2xl p-8 border-l-4 border-l-blue-400/50">
+      <div className="space-y-10">
+        {/* Tier 1: Trae */}
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
+          className="bento-card rounded-2xl p-8 border-l-4 border-l-slate-400/50">
           <div className="flex items-center gap-3 mb-6">
-            <Sparkles size={24} className="text-blue-400" />
-            <span className="text-white font-bold text-xl">Google Gemini</span>
-            <span className="bg-blue-400/10 text-blue-400 text-xs px-2 py-0.5 rounded-full">推荐</span>
+            <Monitor size={24} className="text-slate-400" />
+            <span className="text-white font-bold text-xl">Tier 1 · Trae</span>
+            <span className="bg-slate-400/10 text-slate-400 text-xs px-2 py-0.5 rounded-full">基础方案 · 零门槛</span>
           </div>
-          <p className="text-secondary text-base leading-relaxed mb-6">Google 的 AI 模型，能力强大，通过学生会员可以极低成本获取高级功能。</p>
-          <div className="space-y-4">
-            <div className="bg-white/5 rounded-xl p-5">
-              <p className="text-white text-sm font-semibold mb-3">学生会员获取教程</p>
-              <div className="space-y-2 text-secondary text-sm">
-                <div className="flex items-start gap-2"><span className="text-accent font-bold shrink-0">1.</span><span>准备梯子（科学上网工具）</span></div>
-                <div className="flex items-start gap-2"><span className="text-accent font-bold shrink-0">2.</span><span>注册 Google 账号</span></div>
-                <div className="flex items-start gap-2"><span className="text-accent font-bold shrink-0">3.</span><span>淘宝搜索"Google 学生认证"，购买学生身份认证服务</span></div>
-                <div className="flex items-start gap-2"><span className="text-accent font-bold shrink-0">4.</span><span>完成认证后开通学生会员</span></div>
-              </div>
+          <p className="text-secondary text-base leading-relaxed mb-6">字节跳动出品的 AI IDE，国内直接使用，目前完全免费。适合大家自己下载实验，熟悉 AI 辅助编程的工作方式。</p>
+          <div className="bg-white/5 rounded-xl p-5">
+            <p className="text-white text-sm font-semibold mb-3">使用方式</p>
+            <div className="space-y-2 text-secondary text-sm">
+              <div className="flex items-start gap-2"><span className="text-accent font-bold shrink-0">1.</span><span>直接下载 Trae IDE 安装使用</span></div>
+              <div className="flex items-start gap-2"><span className="text-accent font-bold shrink-0">2.</span><span>内置国内模型（GLM / 豆包），无需科学上网</span></div>
+              <div className="flex items-start gap-2"><span className="text-accent font-bold shrink-0">3.</span><span>目前完全免费，适合日常实验和简单场景</span></div>
             </div>
-            <div className="bg-green-400/10 rounded-xl p-4 flex items-center justify-between">
-              <span className="text-green-400 text-sm font-semibold">💰 费用</span>
-              <span className="text-white text-lg font-bold">约 ¥50 / 年</span>
-            </div>
+          </div>
+          <div className="bg-green-400/10 rounded-xl p-4 mt-4 flex items-center justify-between">
+            <span className="text-green-400 text-sm font-semibold">💰 费用</span>
+            <span className="text-white text-lg font-bold">¥0 / 免费</span>
           </div>
         </motion.div>
 
-        {/* Kiro IDE + 阿里云 */}
-        <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
-          className="bento-card rounded-2xl p-8 border-l-4 border-l-green-400/50">
+        {/* Tier 2: Antigravity */}
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }}
+          className="bento-card rounded-2xl p-8 border-l-4 border-l-blue-400/50">
           <div className="flex items-center gap-3 mb-6">
-            <Monitor size={24} className="text-green-400" />
-            <span className="text-white font-bold text-xl">Kiro IDE</span>
-            <span className="bg-green-400/10 text-green-400 text-xs px-2 py-0.5 rounded-full">本次使用</span>
+            <Sparkles size={24} className="text-blue-400" />
+            <span className="text-white font-bold text-xl">Tier 2 · Antigravity</span>
+            <span className="bg-blue-400/10 text-blue-400 text-xs px-2 py-0.5 rounded-full">进阶方案 · 推荐</span>
           </div>
-          <p className="text-secondary text-base leading-relaxed mb-6">AWS 出品的 AI IDE，内置 Skills 机制，本次 Demo 就是用 Kiro 完成的。</p>
-          <div className="space-y-4">
-            <div className="bg-white/5 rounded-xl p-5">
-              <p className="text-white text-sm font-semibold mb-3">会员获取方式</p>
-              <div className="space-y-2 text-secondary text-sm">
-                <div className="flex items-start gap-2"><span className="text-accent font-bold shrink-0">1.</span><span>通过阿里云国际版注册 AWS 账号</span></div>
-                <div className="flex items-start gap-2"><span className="text-accent font-bold shrink-0">2.</span><span>使用 AWS 账号登录 Kiro IDE</span></div>
-                <div className="flex items-start gap-2"><span className="text-accent font-bold shrink-0">3.</span><span>开通会员，享受完整的 AI 辅助编程功能</span></div>
-              </div>
+          <p className="text-secondary text-base leading-relaxed mb-6">Google 出品的 AI IDE，可以使用国外顶级 AI 模型。免费用户有 $300 算力额度，足够长期使用。</p>
+          <div className="bg-white/5 rounded-xl p-5">
+            <p className="text-white text-sm font-semibold mb-3">获取方式</p>
+            <div className="space-y-2 text-secondary text-sm">
+              <div className="flex items-start gap-2"><span className="text-accent font-bold shrink-0">1.</span><span>准备科学上网工具</span></div>
+              <div className="flex items-start gap-2"><span className="text-accent font-bold shrink-0">2.</span><span>注册 Google 账号</span></div>
+              <div className="flex items-start gap-2"><span className="text-accent font-bold shrink-0">3.</span><span>下载 Antigravity IDE，用 Google 账号登录</span></div>
+              <div className="flex items-start gap-2"><span className="text-accent font-bold shrink-0">4.</span><span>自动获得 $300 免费算力额度</span></div>
             </div>
-            <div className="bg-yellow-400/10 rounded-xl p-4">
-              <p className="text-yellow-400 text-sm font-semibold mb-2">💡 提示</p>
-              <p className="text-secondary text-xs leading-relaxed">阿里云国际版可以直接用支付宝付款，免去信用卡的麻烦。Kiro 有免费额度可以先体验。</p>
+          </div>
+          <div className="bg-green-400/10 rounded-xl p-4 mt-4 flex items-center justify-between">
+            <span className="text-green-400 text-sm font-semibold">💰 费用</span>
+            <span className="text-white text-lg font-bold">$300 免费额度（约 ¥2,100）</span>
+          </div>
+        </motion.div>
+
+        {/* Tier 3: Kiro */}
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }}
+          className="bento-card rounded-2xl p-8 border-l-4 border-l-accent/50 bg-accent/[0.02]">
+          <div className="flex items-center gap-3 mb-6">
+            <Monitor size={24} className="text-accent" />
+            <span className="text-white font-bold text-xl">Tier 3 · Kiro</span>
+            <span className="bg-accent/10 text-accent text-xs px-2 py-0.5 rounded-full">最优方案 · 本次使用</span>
+          </div>
+          <p className="text-secondary text-base leading-relaxed mb-6">亚马逊（AWS）出品的 AI IDE，可以使用世界上最好的 AI 模型（Claude 系列）。需要 AWS 账号，且账号需在一年以内注册。</p>
+          <div className="bg-white/5 rounded-xl p-5">
+            <p className="text-white text-sm font-semibold mb-3">获取方式</p>
+            <div className="space-y-2 text-secondary text-sm">
+              <div className="flex items-start gap-2"><span className="text-accent font-bold shrink-0">1.</span><span>需要一个一年以内注册的 AWS 账号</span></div>
+              <div className="flex items-start gap-2"><span className="text-accent font-bold shrink-0">2.</span><span>如果有需要，由我这边统一办理，其他人不用自己弄</span></div>
+              <div className="flex items-start gap-2"><span className="text-accent font-bold shrink-0">3.</span><span>使用 AWS 账号登录 Kiro IDE 即可</span></div>
             </div>
+          </div>
+          <div className="bg-yellow-400/10 rounded-xl p-4 mt-4">
+            <p className="text-yellow-400 text-sm font-semibold mb-2">💡 说明</p>
+            <p className="text-secondary text-xs leading-relaxed">Kiro 有免费额度可以先体验。AWS 账号注册需要一年以内的新账号才能享受相关权益，所以这个由我来统一处理，大家不需要自己操心。</p>
           </div>
         </motion.div>
       </div>

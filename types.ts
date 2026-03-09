@@ -26,6 +26,9 @@ export interface ToolInfo {
   free: string;
   paid: string;
   note: string;
+  tier: number;        // 推荐层级：1=基础, 2=进阶, 3=最优
+  requirement: string; // 使用前提条件
+  aiModel?: string;    // 可用的 AI 模型
 }
 
 export interface DemoOutput {

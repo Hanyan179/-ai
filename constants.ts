@@ -618,11 +618,36 @@ export const SCENARIOS: ScenarioItem[] = [
 // ========== Tool Comparison ==========
 
 export const TOOLS: ToolInfo[] = [
-  { name: 'Trae', vendor: '字节跳动', free: '目前免费', paid: '暂未公布', note: '国内友好，内置 Skills 机制' },
-  { name: 'Kiro', vendor: 'AWS', free: '有免费额度', paid: '~$19/月', note: '本次 Demo 使用' },
-  { name: 'Cursor', vendor: 'Anysphere', free: '有限免费', paid: '$20/月', note: '最成熟的 AI IDE' },
-  { name: 'Windsurf', vendor: 'Codeium', free: '有限免费', paid: '$15/月', note: '性价比高' },
-  { name: 'GitHub Copilot', vendor: 'Microsoft', free: '个人免费版', paid: '$10-19/月', note: 'VS Code 深度集成' },
+  {
+    name: 'Trae',
+    vendor: '字节跳动',
+    free: '完全免费',
+    paid: '暂未公布',
+    note: '国内直接下载使用，零门槛，适合所有人自行实验和日常使用',
+    tier: 1,
+    requirement: '无，直接下载即可使用',
+    aiModel: 'GLM / 豆包',
+  },
+  {
+    name: 'Antigravity',
+    vendor: 'Google',
+    free: '$300 免费额度',
+    paid: '按量计费',
+    note: '谷歌出品 AI IDE，可使用国外顶级 AI 模型，需谷歌账号及 $300 免费算力额度',
+    tier: 2,
+    requirement: '谷歌账号 + $300 免费算力额度（自动获得）',
+    aiModel: 'Gemini 系列',
+  },
+  {
+    name: 'Kiro',
+    vendor: 'AWS (亚马逊)',
+    free: '有免费额度',
+    paid: '~$19/月',
+    note: '亚马逊出品，可用世界最顶级模型（Claude），需 AWS 账号（一年以内注册），由我统一办理',
+    tier: 3,
+    requirement: 'AWS 账号（需一年以内注册），由我统一办理，其他人不用操心',
+    aiModel: 'Claude Sonnet / Opus',
+  },
 ];
 
 // ========== Demo Output ==========
