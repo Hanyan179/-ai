@@ -3,13 +3,16 @@ import { SkillInfo, DemoOutput } from './types';
 import { SKILLS_DATA, SCENARIOS, TOOLS, DEMO_OUTPUTS, DEMO_DSFA, SKILLS_MARKETPLACES } from './constants';
 import SkillModal from './components/SkillModal';
 import SectionWrapper from './components/SectionWrapper';
+import PortfolioPage from './pages/portfolio/PortfolioPage';
 import { motion } from 'framer-motion';
 import {
   ChevronDown, BookOpen, Database, Code2, FileText,
   Layers, GitBranch, Search, Shield, PenTool,
   Zap, ArrowRight, MessageSquare, ExternalLink,
-  Route, Cpu, Monitor, Terminal, X, Sparkles
+  Route, Cpu, Monitor, Terminal, X, Sparkles, User
 } from 'lucide-react';
+
+type PageType = 'demo' | 'portfolio';
 
 const ProgressBar = () => {
   const [p, setP] = useState(0);
@@ -49,25 +52,50 @@ const SkillCard: React.FC<{ skill: SkillInfo; color: string; onClick: () => void
 };
 
 export default function App() {
+  const [currentPage, setCurrentPage] = useState<PageType>('demo');
   const [selectedSkill, setSelectedSkill] = useState<SkillInfo | null>(null);
   const dsfaSkills = SKILLS_DATA.filter(s => s.category === 'dsfa');
   const p2340Skills = SKILLS_DATA.filter(s => s.category === 'p2340');
   const generalSkills = SKILLS_DATA.filter(s => s.category === 'general');
+
+  const navigateTo = (page: PageType) => {
+    setCurrentPage(page);
+    window.scrollTo(0, 0);
+  };
+
+  if (currentPage === 'portfolio') {
+    return (
+      <div className="bg-background min-h-screen text-primary selection:bg-white/20 selection:text-white">
+        <ProgressBar />
+        <button
+          onClick={() => navigateTo('demo')}
+          className="fixed top-4 left-4 z-50 px-4 py-2 rounded-lg bg-slate-800/80 border border-slate-700/50 text-slate-300 hover:text-white hover:bg-slate-700/80 transition-all duration-200 flex items-center gap-2 backdrop-blur-sm"
+        >
+          <ArrowRight size={16} className="rotate-180" />
+          返回 Demo 报告
+        </button>
+        <PortfolioPage />
+      </div>
+    );
+  }
+
   return (
     <div className="bg-background min-h-screen text-primary selection:bg-white/20 selection:text-white">
       <ProgressBar />
+      {/* 右上角跳转按钮 */}
       <SkillModal skill={selectedSkill} onClose={() => setSelectedSkill(null)} />
       <main className="flex flex-col">
         <S1_Hero />
         <S2_Evolution />
         <S3_DocAsset />
-        <S4_TwoPaths />
-        <S5_SceneDef />
-        <S6_SkillsGallery dsfaSkills={dsfaSkills} p2340Skills={p2340Skills} generalSkills={generalSkills} onSelect={setSelectedSkill} />
-        <S7_DemoOutput />
-        <S8_ToolCompare />
-        <S9_ToolRecommend />
-        <S10_Conclusion />
+        <S4_Portfolio onNavigate={() => navigateTo('portfolio')} />
+        <S5_TwoPaths />
+        <S6_SceneDef />
+        <S7_SkillsGallery dsfaSkills={dsfaSkills} p2340Skills={p2340Skills} generalSkills={generalSkills} onSelect={setSelectedSkill} />
+        <S8_DemoOutput />
+        <S9_ToolCompare />
+        <S10_ToolRecommend />
+        <S11_Conclusion />
       </main>
       <footer className="py-8 px-8 text-center text-secondary/40 text-xs border-t border-white/5">DreamWeb AI Coding Demo · 2025</footer>
     </div>
@@ -216,12 +244,33 @@ function S3_DocAsset() {
   );
 }
 
-/* ===== 四、两条路径 ===== */
-function S4_TwoPaths() {
+/* ===== 四、业余时间成果展示 ===== */
+function S4_Portfolio({ onNavigate }: { onNavigate: () => void }) {
+  return (
+    <SectionWrapper>
+      <div className="flex flex-col items-center text-center">
+        <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">四、业余时间成果展示</span>
+        <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">个人技术实践</h2>
+        <p className="text-secondary text-2xl max-w-3xl mb-10">业余时间利用 AI 辅助完成的全栈项目，<br className="hidden md:block" />从 Java 后端到 Web 全栈、iOS 原生开发。</p>
+        <button
+          onClick={onNavigate}
+          className="px-8 py-4 rounded-xl bg-accent/10 border border-accent/30 text-accent hover:bg-accent/20 transition-all duration-200 flex items-center gap-3 text-lg font-semibold"
+        >
+          <User size={20} />
+          查看项目详情
+          <ArrowRight size={20} />
+        </button>
+      </div>
+    </SectionWrapper>
+  );
+}
+
+/* ===== 五、两条路径 ===== */
+function S5_TwoPaths() {
   return (
     <SectionWrapper>
       <div className="flex flex-col items-center text-center mb-16">
-        <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">四、针对叶哥问题的研究</span>
+        <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">五、针对叶哥问题的研究</span>
         <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">两条路径见解</h2>
         <p className="text-secondary text-2xl max-w-3xl">框架重与否、选择什么框架其实都不重要，<br className="hidden md:block" /><span className="text-white font-semibold">确定性编程（Agent 开发）才是核心。</span></p>
       </div>
@@ -287,13 +336,13 @@ function S4_TwoPaths() {
   );
 }
 
-/* ===== 五、场景定义 ===== */
-function S5_SceneDef() {
+/* ===== 六、场景定义 ===== */
+function S6_SceneDef() {
   const [showCrossModule, setShowCrossModule] = useState(false);
   return (
     <SectionWrapper>
       <div className="flex flex-col items-center text-center mb-16">
-        <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">五、场景定义</span>
+        <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">六、场景定义</span>
         <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">明确低代码与 AI 的业务边界</h2>
         <p className="text-secondary text-2xl max-w-3xl">针对 DreamWeb 等平台的实际情况，<br className="hidden md:block" />我们需要明确什么需要 AI 做，什么不需要。</p>
       </div>
@@ -378,7 +427,7 @@ function S5_SceneDef() {
 }
 
 /* ===== Skills 一览（可点击） ===== */
-function S6_SkillsGallery({ dsfaSkills, p2340Skills, generalSkills, onSelect }: {
+function S7_SkillsGallery({ dsfaSkills, p2340Skills, generalSkills, onSelect }: {
   dsfaSkills: SkillInfo[]; p2340Skills: SkillInfo[]; generalSkills: SkillInfo[]; onSelect: (s: SkillInfo) => void;
 }) {
   return (
@@ -425,14 +474,14 @@ function S6_SkillsGallery({ dsfaSkills, p2340Skills, generalSkills, onSelect }: 
   );
 }
 
-/* ===== 六、Demo 测试情况 ===== */
-function S7_DemoOutput() {
+/* ===== 七、Demo 测试情况 ===== */
+function S8_DemoOutput() {
   const [selectedDemo, setSelectedDemo] = useState<DemoOutput | null>(null);
   const totalLines = DEMO_OUTPUTS.reduce((sum, d) => sum + d.lines, 0);
   return (
     <SectionWrapper>
       <div className="flex flex-col items-center text-center mb-16">
-        <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">六、Demo 测试情况汇报</span>
+        <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">七、Demo 测试情况汇报</span>
         <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">初步 Demo 跑通测试</h2>
         <p className="text-secondary text-2xl max-w-3xl">基于路径 2 和场景定义，做了两组 Demo 跑通测试。<br className="hidden md:block" />如有需要，随时可以进行现场演示。</p>
       </div>
@@ -592,12 +641,12 @@ function S7_DemoOutput() {
   );
 }
 
-/* ===== 七、工具形态对比 ===== */
-function S8_ToolCompare() {
+/* ===== 八、工具形态对比 ===== */
+function S9_ToolCompare() {
   return (
     <SectionWrapper>
       <div className="flex flex-col items-center text-center mb-16">
-        <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">七、工具形态与使用方案</span>
+        <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">八、工具形态与使用方案</span>
         <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">AI IDE vs AI CLI</h2>
         <p className="text-secondary text-2xl max-w-3xl">目前 AI 辅助编程工具主要分为两类，<br className="hidden md:block" />我们需要认清它们的优缺点。</p>
       </div>
@@ -657,12 +706,12 @@ function S8_ToolCompare() {
   );
 }
 
-/* ===== 八、目前的工具使用推荐介绍 ===== */
-function S9_ToolRecommend() {
+/* ===== 九、目前的工具使用推荐介绍 ===== */
+function S10_ToolRecommend() {
   return (
     <SectionWrapper>
       <div className="flex flex-col items-center text-center mb-16">
-        <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">八、AI IDE 使用方案</span>
+        <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">九、AI IDE 使用方案</span>
         <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">三级方案详细说明</h2>
         <p className="text-secondary text-2xl max-w-3xl">从国内免费到世界顶级模型，<br className="hidden md:block" />三个层级按需选择。</p>
       </div>
@@ -741,12 +790,12 @@ function S9_ToolRecommend() {
   );
 }
 
-/* ===== 九、总结与认知升级 ===== */
-function S10_Conclusion() {
+/* ===== 十、总结与认知升级 ===== */
+function S11_Conclusion() {
   return (
     <SectionWrapper>
       <div className="flex flex-col items-center text-center mb-16">
-        <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">九、总结与认知升级</span>
+        <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">十、总结与认知升级</span>
         <h2 className="text-5xl md:text-6xl font-bold text-white mb-8">核心认知升级</h2>
       </div>
       {/* 金句 */}
