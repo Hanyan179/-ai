@@ -4,6 +4,7 @@ import { SKILLS_DATA, SCENARIOS, TOOLS, DEMO_OUTPUTS, DEMO_DSFA, SKILLS_MARKETPL
 import SkillModal from './components/SkillModal';
 import SectionWrapper from './components/SectionWrapper';
 import PortfolioPage from './pages/portfolio/PortfolioPage';
+import EasyVibePage from './pages/easy-vibe/EasyVibePage';
 import { motion } from 'framer-motion';
 import {
   ChevronDown, BookOpen, Database, Code2, FileText,
@@ -12,7 +13,7 @@ import {
   Route, Cpu, Monitor, Terminal, X, Sparkles, User
 } from 'lucide-react';
 
-type PageType = 'demo' | 'portfolio';
+type PageType = 'demo' | 'portfolio' | 'easy-vibe';
 
 const ProgressBar = () => {
   const [p, setP] = useState(0);
@@ -63,6 +64,21 @@ export default function App() {
     window.scrollTo(0, 0);
   };
 
+  if (currentPage === 'easy-vibe') {
+    return (
+      <div className="bg-background min-h-screen text-primary selection:bg-white/20 selection:text-white">
+        <button
+          onClick={() => navigateTo('demo')}
+          className="fixed top-4 left-4 z-50 px-4 py-2 rounded-lg bg-slate-800/80 border border-slate-700/50 text-slate-300 hover:text-white hover:bg-slate-700/80 transition-all duration-200 flex items-center gap-2 backdrop-blur-sm"
+        >
+          <ArrowRight size={16} className="rotate-180" />
+          返回 Demo 报告
+        </button>
+        <EasyVibePage />
+      </div>
+    );
+  }
+
   if (currentPage === 'portfolio') {
     return (
       <div className="bg-background min-h-screen text-primary selection:bg-white/20 selection:text-white">
@@ -83,6 +99,14 @@ export default function App() {
     <div className="bg-background min-h-screen text-primary selection:bg-white/20 selection:text-white">
       <ProgressBar />
       {/* 右上角跳转按钮 */}
+      <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
+        <button
+          onClick={() => navigateTo('easy-vibe')}
+          className="px-4 py-2 rounded-lg bg-purple-600/80 border border-purple-500/50 text-white hover:bg-purple-500/80 transition-all duration-200 flex items-center gap-2 backdrop-blur-sm text-sm font-medium"
+        >
+          🎵 Easy-Vibe
+        </button>
+      </div>
       <SkillModal skill={selectedSkill} onClose={() => setSelectedSkill(null)} />
       <main className="flex flex-col">
         <S1_Hero />
@@ -108,19 +132,19 @@ function S1_Hero() {
     <SectionWrapper className="bg-background relative">
       <div className="flex flex-col items-start justify-center h-full max-w-5xl">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2 }} className="mb-8 flex items-center space-x-3">
-          <span className="px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-bold tracking-wide uppercase">2026.03.04 · 回答与验证</span>
+          <span className="px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-bold tracking-wide uppercase">AI 编程研究报告</span>
           <span className="text-secondary text-xs tracking-wide uppercase border-l border-white/10 pl-3">DreamWeb</span>
         </motion.div>
         <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }} className="font-sans font-bold text-5xl md:text-7xl tracking-tight text-white mb-6 leading-[1.1]">
-          针对叶哥 AI 编程研究<br/>相关问题的回答与初步验证
+          AI 辅助编程<br/>企业落地研究与验证
         </motion.h1>
         <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.4 }} className="font-sans text-xl md:text-2xl text-secondary font-medium tracking-tight max-w-3xl leading-relaxed mb-8">
-          初步结论：不需要重构框架，也不必局限于公开框架。问题的解法不在于框架本身的轻重，而在于开发模式的工程化演进和场景定义。
+          核心结论：不需要重构框架，也不必局限于公开框架。问题的解法不在于框架本身的轻重，而在于开发模式的工程化演进和场景定义。
         </motion.p>
-        {/* 叶哥原话引用 */}
+        {/* 核心问题引用 */}
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.5 }} className="bento-card rounded-2xl p-6 max-w-3xl">
-          <div className="flex items-center gap-2 mb-3"><MessageSquare size={14} className="text-accent" /><span className="text-accent text-xs font-semibold">叶哥问题摘要</span></div>
-          <p className="text-secondary text-sm leading-relaxed italic">"前端的应该是比较容易实现的，基于公开框架和已有的 skill 做静态示例...把 DSFA 框架拆解形成多个 skill...但是后台部分相对就要麻烦很多，我们的框架引擎都很重，也都是自己研发的。可能要完全重构框架或者就是只基于公开框架来做开发。"</p>
+          <div className="flex items-center gap-2 mb-3"><MessageSquare size={14} className="text-accent" /><span className="text-accent text-xs font-semibold">核心问题</span></div>
+          <p className="text-secondary text-sm leading-relaxed italic">"前端部分基于公开框架和已有的 Skill 做静态示例相对容易实现，但后台部分相对麻烦很多——企业框架引擎都很重，也都是自研的。是否需要完全重构框架，还是只基于公开框架来做开发？"</p>
         </motion.div>
       </div>
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1, duration: 1 }} className="absolute bottom-12 left-1/2 -translate-x-1/2 text-secondary/40 flex flex-col items-center gap-2">
@@ -138,7 +162,7 @@ function S2_Evolution() {
       icon: <Zap size={32} />, color: 'text-yellow-400', border: 'border-yellow-400/20', bg: 'bg-yellow-400/5', num: '01',
       title: 'Vibe Coding', sub: '情绪化 / 直觉编程',
       desc: '临时性、探索性和即兴交互，充分发挥 AI 发散能力，用于项目从 0 到 1 简单、迅速的功能实现。',
-      detail: '这就类似于叶哥提到的前端部分。前端很多时候偏向单文件、无复杂的底层联动，AI 凭借庞大的训练数据可以迅速生成界面。',
+      detail: '前端很多时候偏向单文件、无复杂的底层联动，AI 凭借庞大的训练数据可以迅速生成界面。',
       limit: '局限：随着业务深入，数据"熵增"，边界变广，AI 会开始抓瞎。'
     },
     {
@@ -270,7 +294,7 @@ function S5_TwoPaths() {
   return (
     <SectionWrapper>
       <div className="flex flex-col items-center text-center mb-16">
-        <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">五、针对叶哥问题的研究</span>
+        <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">五、路径研究</span>
         <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">两条路径见解</h2>
         <p className="text-secondary text-2xl max-w-3xl">框架重与否、选择什么框架其实都不重要，<br className="hidden md:block" /><span className="text-white font-semibold">确定性编程（Agent 开发）才是核心。</span></p>
       </div>
