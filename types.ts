@@ -1,44 +1,40 @@
-// AI Coding Demo Types
-
-export interface SkillInfo {
+/** 术语小卡片 */
+export interface Term {
   id: string;
-  name: string;
-  displayName: string;
+  word: string;
+  oneLiner: string;
+  detail: string;
+}
+
+/** 场景 */
+export interface Scenario {
+  id: string;
+  title: string;
+  situation: string;
+  prompt: string;
+  why: string;
+  /** 分类 */
+  category: 'frontend' | 'backend' | 'deploy' | 'ai' | 'general';
+  termIds?: string[];
+  imageNote?: string;
+}
+
+/** 必要操作 */
+export interface EssentialStep {
+  id: string;
+  title: string;
   description: string;
-  category: 'dsfa' | 'p2340' | 'general';
-  content: string; // markdown content
-  references?: string[];
-  sourcePath?: string; // path to the actual SKILL.md file
+  prompt: string;
+  why: string;
+  termIds?: string[];
 }
 
-export interface ScenarioItem {
-  name: string;
-  frequency: '高' | '中' | '低';
-  patternFixed: boolean;
-  aiCapable: boolean;
-  status: 'done' | 'next' | 'no';
-  statusLabel: string;
-}
-
-export interface ToolInfo {
-  name: string;
-  vendor: string;
-  free: string;
-  paid: string;
-  note: string;
-  tier: number;        // 推荐层级：1=基础, 2=进阶, 3=最优
-  requirement: string; // 使用前提条件
-  aiModel?: string;    // 可用的 AI 模型
-}
-
-export interface DemoOutput {
-  name: string;
-  desc: string;
-  lines: number;
-  rounds?: number;                    // 交互轮次
-  myWords?: { round: number; text: string }[];  // 每轮我对 AI 说的原话
-  skillsUsed?: string[];              // 用到的 skills 文件
-  aiSteps?: string[];                 // AI 的操作步骤
-  files?: string[];                   // 涉及的文件
-  note?: string;                      // 补充说明
+/** Trae 小技巧 */
+export interface TraeTip {
+  id: string;
+  title: string;
+  oneLiner: string;
+  detail: string;
+  link: string;
+  linkLabel?: string;
 }
