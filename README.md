@@ -1,20 +1,24 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# AI 文档仓库
 
-# Run and deploy your AI Studio app
+本仓库现在只保留 Markdown 文档，不再保留前端页面代码。
 
-This contains everything you need to run your app locally.
+## 文档目录
 
-View your app in AI Studio: https://ai.studio/apps/drive/1-7G3ZrjKgber5LK2fiWHsv8PqsriMmMv
+```text
+.kiro/specs/
+public/skills/
+```
 
-## Run Locally
+其中：
 
-**Prerequisites:**  Node.js
+- `.kiro/specs/`：架构、知识库、知识树等方案文档。
+- `public/skills/`：各类 Skills 规则、工作流和参考说明。
 
+## 当前原则
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+```text
+只保留 Markdown
+不保留 Vite / React 代码
+不保留构建产物
+不保留页面资源
+```
