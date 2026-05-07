@@ -2,12 +2,87 @@ import React, { useState, useEffect } from 'react';
 import { ESSENTIAL_STEPS, SCENARIOS, TERMS, CATEGORY_INFO, TRAE_TIPS } from './constants';
 import { Scenario, Term, EssentialStep, TraeTip } from './types';
 import SectionWrapper from './components/SectionWrapper';
+import DemoReportPage from './pages/demo-report/DemoReportPage';
+import EasyVibePage from './pages/easy-vibe/EasyVibePage';
+import PortfolioPage from './pages/portfolio/PortfolioPage';
+import { ArchitecturePage } from './pages';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ChevronDown, Copy, Check, X,
   Lightbulb, BookOpen, Palette, Brain, Server, Cloud, Zap, FileText, Shield,
   ExternalLink, Sparkles,
 } from 'lucide-react';
+
+type SitePage = 'home' | 'demo-report' | 'easy-vibe' | 'portfolio' | 'architecture';
+
+const pagePath: Record<SitePage, string> = {
+  home: '/',
+  'demo-report': '/demo-report',
+  'easy-vibe': '/easy-vibe',
+  portfolio: '/portfolio',
+  architecture: '/architecture',
+};
+
+function pageFromPath(pathname: string): SitePage {
+  const path = pathname.replace(/\/$/, '') || '/';
+  if (path === '/demo-report') return 'demo-report';
+  if (path === '/easy-vibe') return 'easy-vibe';
+  if (path === '/portfolio') return 'portfolio';
+  if (path === '/architecture') return 'architecture';
+  return 'home';
+}
+
+function PageSwitcher({
+  currentPage,
+  onNavigate,
+}: {
+  currentPage: SitePage;
+  onNavigate: (page: SitePage) => void;
+}) {
+  const items: Array<{ page: SitePage; label: string }> = [
+    { page: 'home', label: '当前内容' },
+    { page: 'demo-report', label: '旧版报告' },
+    { page: 'easy-vibe', label: '演示页面' },
+    { page: 'portfolio', label: '作品页面' },
+    { page: 'architecture', label: '架构页面' },
+  ];
+
+  return (
+    <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-white/10 bg-black/70 px-3 py-2 backdrop-blur-xl">
+      {items.map(item => (
+        <button
+          key={item.page}
+          onClick={() => onNavigate(item.page)}
+          className={`rounded-xl px-3 py-1.5 text-xs font-medium transition-colors ${
+            currentPage === item.page
+              ? 'bg-accent text-white'
+              : 'text-secondary hover:bg-white/10 hover:text-white'
+          }`}
+        >
+          {item.label}
+        </button>
+      ))}
+    </nav>
+  );
+}
+
+function PageShell({
+  currentPage,
+  onNavigate,
+  children,
+}: {
+  currentPage: SitePage;
+  onNavigate: (page: SitePage) => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="bg-background min-h-screen text-primary selection:bg-white/20 selection:text-white">
+      <ProgressBar />
+      <PageSwitcher currentPage={currentPage} onNavigate={onNavigate} />
+      <div className="pt-16">{children}</div>
+    </div>
+  );
+}
 
 /* ===== ProgressBar ===== */
 const ProgressBar = () => {
@@ -119,10 +194,56 @@ const categoryIconMap: Record<string, React.ReactNode> = {
 /* ===== App ===== */
 export default function App() {
   const [activeTerm, setActiveTerm] = useState<Term | null>(null);
+  const [currentPage, setCurrentPage] = useState<SitePage>(() => pageFromPath(window.location.pathname));
+
+  useEffect(() => {
+    const handlePopState = () => setCurrentPage(pageFromPath(window.location.pathname));
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const navigateTo = (page: SitePage) => {
+    setCurrentPage(page);
+    window.history.pushState(null, '', pagePath[page]);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  if (currentPage === 'demo-report') {
+    return (
+      <PageShell currentPage={currentPage} onNavigate={navigateTo}>
+        <DemoReportPage />
+      </PageShell>
+    );
+  }
+
+  if (currentPage === 'easy-vibe') {
+    return (
+      <PageShell currentPage={currentPage} onNavigate={navigateTo}>
+        <EasyVibePage />
+      </PageShell>
+    );
+  }
+
+  if (currentPage === 'portfolio') {
+    return (
+      <PageShell currentPage={currentPage} onNavigate={navigateTo}>
+        <PortfolioPage />
+      </PageShell>
+    );
+  }
+
+  if (currentPage === 'architecture') {
+    return (
+      <PageShell currentPage={currentPage} onNavigate={navigateTo}>
+        <ArchitecturePage />
+      </PageShell>
+    );
+  }
 
   return (
     <div className="bg-background min-h-screen text-primary selection:bg-white/20 selection:text-white">
       <ProgressBar />
+      <PageSwitcher currentPage={currentPage} onNavigate={navigateTo} />
       <AnimatePresence>
         {activeTerm && <TermModal term={activeTerm} onClose={() => setActiveTerm(null)} />}
       </AnimatePresence>
