@@ -6,7 +6,7 @@ const Roadmap: React.FC = () => {
   return (
     <SectionWrapper className="bg-background">
       <div className="mb-16">
-        <h2 className="text-4xl font-bold text-white tracking-tight mb-4">{ROADMAP_DATA.title}</h2>
+        <h2 className="text-4xl font-bold text-primary tracking-tight mb-4">{ROADMAP_DATA.title}</h2>
       </div>
 
       <div className="space-y-4">
@@ -20,17 +20,17 @@ const Roadmap: React.FC = () => {
             </div>
 
             <div className="flex-grow">
-                <h3 className="text-xl font-bold text-white mb-2">{step.name}</h3>
+                <h3 className="text-xl font-bold text-primary mb-2">{step.name}</h3>
                 <p className="text-secondary text-sm leading-relaxed max-w-2xl">
                     {step.desc}
                 </p>
             </div>
 
-            <div className="hidden md:block w-px h-12 bg-white/10 mx-4"></div>
+            <div className="hidden md:block w-px h-12 bg-primary/10 mx-4"></div>
 
             <div className="flex-shrink-0 w-48">
                 <div className="text-xs text-secondary mb-1">Key Action</div>
-                <div className="text-sm font-medium text-white">{step.action}</div>
+                <div className="text-sm font-medium text-primary">{step.action}</div>
             </div>
           </div>
         ))}

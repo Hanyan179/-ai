@@ -21,8 +21,8 @@ function CopyButton({ text }: { text: string }) {
       onClick={handleCopy}
       className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all duration-200 shrink-0 ${
         copied
-          ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-          : 'bg-white/5 text-secondary hover:text-white hover:bg-white/10 border border-white/10'
+          ? 'bg-green-500/20 text-green-600 border border-green-500/30'
+          : 'bg-primary/5 text-secondary hover:text-primary hover:bg-primary/10 border border-primary/10'
       }`}
     >
       {copied ? <CheckCircle2 size={14} /> : <Copy size={14} />}
@@ -227,7 +227,7 @@ const EasyVibePage: React.FC = () => {
               <Rocket size={14} />
               AI 编程实时演示
             </div>
-            <h1 className="font-bold text-4xl md:text-5xl tracking-tight text-white mb-4">
+            <h1 className="font-bold text-4xl md:text-5xl tracking-tight text-primary mb-4">
               选一个感兴趣的场景
             </h1>
             <p className="text-secondary text-lg">
@@ -258,14 +258,14 @@ const EasyVibePage: React.FC = () => {
                       >
                         <button
                           onClick={() => setExpandedPrompt(isExpanded ? null : key)}
-                          className="w-full p-5 text-left hover:bg-white/[0.02] transition-colors"
+                          className="w-full p-5 text-left hover:bg-primary/[0.02] transition-colors"
                         >
                           <div className="flex items-center gap-3 mb-2">
                             <div className={`w-9 h-9 rounded-lg ${c.bg} flex items-center justify-center ${c.text}`}>
                               {p.icon}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <div className="text-white font-semibold text-sm">{p.title}</div>
+                              <div className="text-primary font-semibold text-sm">{p.title}</div>
                             </div>
                             <span className={`px-2 py-0.5 rounded text-[10px] font-medium ${c.tag} shrink-0`}>{p.tag}</span>
                           </div>
@@ -277,10 +277,10 @@ const EasyVibePage: React.FC = () => {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ duration: 0.15 }}
-                            className="px-5 pb-5 border-t border-white/5"
+                            className="px-5 pb-5 border-t border-primary/5"
                           >
-                            <div className="mt-4 bg-black/30 rounded-lg p-4 mb-4">
-                              <p className="text-white/80 text-sm leading-relaxed">{p.prompt}</p>
+                            <div className="mt-4 bg-primary/5 rounded-lg p-4 mb-4">
+                              <p className="text-primary/80 text-sm leading-relaxed">{p.prompt}</p>
                             </div>
                             <CopyButton text={p.prompt} />
                           </motion.div>
@@ -301,7 +301,7 @@ const EasyVibePage: React.FC = () => {
             className="bento-card rounded-2xl p-8 text-center"
           >
             <Sparkles size={20} className="text-accent mx-auto mb-4" />
-            <p className="text-white font-semibold text-lg mb-2">当然，您也可以提自己的想法</p>
+            <p className="text-primary font-semibold text-lg mb-2">当然，您也可以提自己的想法</p>
             <p className="text-secondary text-sm max-w-md mx-auto">
               以上只是几个示例场景。您随时可以说出自己想要的东西，我们现场帮您实现。
             </p>
@@ -309,7 +309,7 @@ const EasyVibePage: React.FC = () => {
 
         </div>
       </main>
-      <footer className="py-6 px-8 text-center text-secondary/30 text-xs border-t border-white/5">
+      <footer className="py-6 px-8 text-center text-secondary/30 text-xs border-t border-primary/5">
         会说话，就会做应用
       </footer>
     </div>

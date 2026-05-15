@@ -13,7 +13,7 @@ const MVPConclusion: React.FC = () => {
         <span className="text-accent font-semibold tracking-wide text-sm uppercase mb-2 block">
             Final Answer
         </span>
-        <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight mb-6">
+        <h2 className="text-4xl md:text-5xl font-bold text-primary tracking-tight mb-6">
             最终答卷：落地验证
         </h2>
 
@@ -37,15 +37,15 @@ const MVPConclusion: React.FC = () => {
       {/* 2. Comparison: Why this MVP matters despite the platform having similar features */}
       <div className="grid md:grid-cols-2 gap-8 mb-16 relative">
           {/* Connector Line (Desktop) */}
-          <div className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 p-2 bg-background rounded-full border border-white/10">
-             <ArrowRight className="text-white/50" />
+          <div className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 p-2 bg-background rounded-full border border-primary/10">
+             <ArrowRight className="text-primary/50" />
           </div>
 
           {/* Left: Reality */}
-          <div className="p-8 rounded-2xl bg-surfaceHighlight/20 border border-white/5 border-l-4 border-l-secondary/50">
+          <div className="p-8 rounded-2xl bg-surfaceHighlight/20 border border-primary/5 border-l-4 border-l-secondary/50">
              <div className="flex items-center gap-3 mb-6">
                 <AlertTriangle className="text-secondary" />
-                <h3 className="text-xl font-bold text-white">{MVP_ANALYSIS_DATA.comparison.current.title}</h3>
+                <h3 className="text-xl font-bold text-primary">{MVP_ANALYSIS_DATA.comparison.current.title}</h3>
              </div>
              <ul className="space-y-4">
                 {MVP_ANALYSIS_DATA.comparison.current.points.map((p, i) => (
@@ -63,13 +63,13 @@ const MVPConclusion: React.FC = () => {
              <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-6">
                     <CheckCircle className="text-accent" />
-                    <h3 className="text-xl font-bold text-white">{MVP_ANALYSIS_DATA.comparison.mvp.title}</h3>
+                    <h3 className="text-xl font-bold text-primary">{MVP_ANALYSIS_DATA.comparison.mvp.title}</h3>
                 </div>
                 <ul className="space-y-4">
                     {MVP_ANALYSIS_DATA.comparison.mvp.points.map((p, i) => (
-                        <li key={i} className="flex items-start gap-3 text-white/90 text-sm leading-relaxed">
+                        <li key={i} className="flex items-start gap-3 text-primary/90 text-sm leading-relaxed">
                             <span className="block w-1.5 h-1.5 rounded-full bg-accent mt-1.5 flex-shrink-0" />
-                            <strong className="text-white" dangerouslySetInnerHTML={{ __html: p.replace(/\*\*(.*?)\*\*/g, '<span class="text-accent">$1</span>') }}></strong>
+                            <strong className="text-primary" dangerouslySetInnerHTML={{ __html: p.replace(/\*\*(.*?)\*\*/g, '<span class="text-accent">$1</span>') }}></strong>
                         </li>
                     ))}
                 </ul>
@@ -80,8 +80,8 @@ const MVPConclusion: React.FC = () => {
       {/* 3. The Gap & Future: Honesty about what's missing (Judge AI, Golden Data) */}
       <div>
          <div className="flex items-center justify-between mb-8">
-            <h3 className="text-2xl font-bold text-white">{MVP_ANALYSIS_DATA.future.title}</h3>
-            <span className="text-xs font-mono text-secondary px-3 py-1 bg-white/5 rounded border border-white/10">Road to Production</span>
+            <h3 className="text-2xl font-bold text-primary">{MVP_ANALYSIS_DATA.future.title}</h3>
+            <span className="text-xs font-mono text-secondary px-3 py-1 bg-primary/5 rounded border border-primary/10">Road to Production</span>
          </div>
 
          <div className="grid md:grid-cols-3 gap-6">
@@ -90,17 +90,17 @@ const MVPConclusion: React.FC = () => {
                 return (
                     <div key={index} className="bento-card p-6 rounded-xl flex flex-col group hover:bg-surfaceHighlight transition-colors">
                         <div className="flex items-center justify-between mb-4">
-                            <div className="p-2 bg-white/5 rounded-lg text-white group-hover:bg-white/10">
+                            <div className="p-2 bg-primary/5 rounded-lg text-primary group-hover:bg-primary/10">
                                 <Icon size={20} />
                             </div>
                             <span className="text-[10px] font-bold uppercase tracking-wider text-warning px-2 py-1 bg-warning/10 rounded border border-warning/20">
                                 {item.status}
                             </span>
                         </div>
-                        <h4 className="text-lg font-bold text-white mb-2">{item.label}</h4>
+                        <h4 className="text-lg font-bold text-primary mb-2">{item.label}</h4>
                         <div className="text-sm leading-relaxed whitespace-pre-line text-secondary">
                              {item.desc.split('\n').map((line, i) => (
-                                 <div key={i} className={i === 0 ? "mb-2 opacity-60" : "text-white/80"}>
+                                 <div key={i} className={i === 0 ? "mb-2 opacity-60" : "text-primary/80"}>
                                      {line}
                                  </div>
                              ))}
@@ -111,7 +111,7 @@ const MVPConclusion: React.FC = () => {
          </div>
 
          <p className="text-center text-secondary text-sm mt-12 max-w-2xl mx-auto italic">
-            “MVP 验证了核心逻辑的可行性。既然工程逻辑已经跑通，补全数据流水线与裁判 AI，就只是时间与执行的问题。”
+            "MVP 验证了核心逻辑的可行性。既然工程逻辑已经跑通，补全数据流水线与裁判 AI，就只是时间与执行的问题。"
          </p>
       </div>
 

@@ -23,17 +23,17 @@ const Hero: React.FC<HeroProps> = ({ onNavigateToArchitecture }) => {
           <span className="px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-bold tracking-wide uppercase">
             {HERO_DATA.label}
           </span>
-          <span className="text-secondary text-xs tracking-wide uppercase border-l border-white/10 pl-3">
+          <span className="text-secondary text-xs tracking-wide uppercase border-l border-primary/10 pl-3">
             Internal Confidential
           </span>
         </motion.div>
 
         {/* Title */}
-        <motion.h1 
+        <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="font-sans font-bold text-5xl md:text-7xl tracking-tight text-white mb-6 leading-[1.1]"
+          className="font-sans font-bold text-5xl md:text-7xl tracking-tight text-primary mb-6 leading-[1.1]"
         >
           {HERO_DATA.title}
         </motion.h1>
@@ -53,17 +53,17 @@ const Hero: React.FC<HeroProps> = ({ onNavigateToArchitecture }) => {
            initial={{ opacity: 0, scale: 0.95 }}
            animate={{ opacity: 1, scale: 1 }}
            transition={{ duration: 0.8, delay: 0.5 }}
-           className="flex items-center space-x-6 p-6 rounded-2xl bg-surfaceHighlight/30 border border-white/5 backdrop-blur-md max-w-lg"
+           className="flex items-center space-x-6 p-6 rounded-2xl bg-surfaceHighlight/30 border border-primary/5 backdrop-blur-md max-w-lg"
         >
-            <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white">
+            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                <User size={24} />
             </div>
             <div>
                <div className="text-xs text-secondary uppercase tracking-widest mb-1">Applicant</div>
-               <div className="text-white font-bold text-lg">{PROFILE_DATA.name}</div>
+               <div className="text-primary font-bold text-lg">{PROFILE_DATA.name}</div>
                <div className="text-xs text-secondary/60 mt-0.5">{PROFILE_DATA.role}</div>
             </div>
-            <div className="h-8 w-px bg-white/10"></div>
+            <div className="h-8 w-px bg-primary/10"></div>
             <div>
                <div className="text-xs text-secondary uppercase tracking-widest mb-1">Focus</div>
                <div className="text-accent font-medium">AI Engineering</div>

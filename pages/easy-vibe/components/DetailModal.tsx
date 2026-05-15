@@ -57,11 +57,11 @@ const DetailModal: React.FC<DetailModalProps> = ({ data, onClose }) => {
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="relative bg-[#1a1a2e] border border-white/10 rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto z-10"
+        className="relative bg-[#1a1a2e] border border-primary/10 rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto z-10"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="sticky top-0 bg-[#1a1a2e]/95 backdrop-blur-md border-b border-white/5 px-8 py-5 flex items-start justify-between gap-4 z-10">
+        <div className="sticky top-0 bg-[#1a1a2e]/95 backdrop-blur-md border-b border-primary/5 px-8 py-5 flex items-start justify-between gap-4 z-10">
           <div className="flex-1 min-w-0">
             {(data.stageLabel || data.areaTitle) && (
               <div className="flex items-center gap-2 mb-2 text-xs flex-wrap">
@@ -80,12 +80,12 @@ const DetailModal: React.FC<DetailModalProps> = ({ data, onClose }) => {
                 )}
               </div>
             )}
-            <h2 className="text-white font-bold text-xl leading-tight">
+            <h2 className="text-primary font-bold text-xl leading-tight">
               {data.icon && <span className="mr-2">{data.icon}</span>}
               {data.title}
             </h2>
           </div>
-          <button onClick={onClose} className="text-secondary hover:text-white transition-colors p-1 shrink-0">
+          <button onClick={onClose} className="text-secondary hover:text-primary transition-colors p-1 shrink-0">
             <X size={20} />
           </button>
         </div>
@@ -98,13 +98,13 @@ const DetailModal: React.FC<DetailModalProps> = ({ data, onClose }) => {
               {data.audience && (
                 <div className={`rounded-xl p-4 border ${bc}`}>
                   <div className="text-secondary/60 text-xs mb-1.5 uppercase tracking-wider">适合人群</div>
-                  <div className="text-white text-sm font-medium">{data.audience}</div>
+                  <div className="text-primary text-sm font-medium">{data.audience}</div>
                 </div>
               )}
               {data.learn && (
                 <div className={`rounded-xl p-4 border ${bc}`}>
                   <div className="text-secondary/60 text-xs mb-1.5 uppercase tracking-wider">学习内容</div>
-                  <div className="text-white text-sm font-medium">{data.learn}</div>
+                  <div className="text-primary text-sm font-medium">{data.learn}</div>
                 </div>
               )}
               {data.outcome && (
@@ -117,10 +117,10 @@ const DetailModal: React.FC<DetailModalProps> = ({ data, onClose }) => {
           )}
 
           {/* Detail */}
-          <div className="rounded-xl border border-white/5 bg-white/[0.02] p-6">
+          <div className="rounded-xl border border-primary/5 bg-primary/[0.02] p-6">
             <div className="flex items-center gap-2 mb-4">
               <Lightbulb size={16} className={tc} />
-              <span className="text-white font-semibold text-sm">详细介绍</span>
+              <span className="text-primary font-semibold text-sm">详细介绍</span>
             </div>
             <p className="text-secondary text-sm leading-relaxed">{data.detail}</p>
           </div>
@@ -130,11 +130,11 @@ const DetailModal: React.FC<DetailModalProps> = ({ data, onClose }) => {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <CheckCircle2 size={16} className={tc} />
-                <span className="text-white font-semibold text-sm">核心要点</span>
+                <span className="text-primary font-semibold text-sm">核心要点</span>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                 {data.keyPoints.map((point, i) => (
-                  <div key={i} className="flex items-start gap-3 px-4 py-3 rounded-lg bg-white/[0.03] border border-white/5">
+                  <div key={i} className="flex items-start gap-3 px-4 py-3 rounded-lg bg-primary/[0.03] border border-primary/5">
                     <div className={`w-2 h-2 rounded-full ${dc} mt-1.5 shrink-0`} />
                     <span className="text-secondary text-sm leading-relaxed">{point}</span>
                   </div>
@@ -145,10 +145,10 @@ const DetailModal: React.FC<DetailModalProps> = ({ data, onClose }) => {
         </div>
 
         {/* Footer */}
-        <div className="sticky bottom-0 bg-[#1a1a2e]/95 backdrop-blur-md border-t border-white/5 px-8 py-4 flex items-center justify-end">
+        <div className="sticky bottom-0 bg-[#1a1a2e]/95 backdrop-blur-md border-t border-primary/5 px-8 py-4 flex items-center justify-end">
           <button
             onClick={onClose}
-            className="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-secondary hover:text-white hover:bg-white/10 transition-all text-sm"
+            className="px-5 py-2.5 rounded-xl bg-primary/5 border border-primary/10 text-secondary hover:text-primary hover:bg-primary/10 transition-all text-sm"
           >
             关闭
           </button>

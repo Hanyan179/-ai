@@ -27,11 +27,11 @@ const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ onOpenDetail }) => {
   return (
     <SectionWrapper id="knowledge">
       <div className="flex flex-col items-center text-center mb-16">
-        <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">📚 附录知识库</span>
-        <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">9 大知识领域</h2>
+        <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">📚 附录知识�?/span>
+        <h2 className="text-5xl md:text-6xl font-bold text-primary mb-6">9 大知识领�?/h2>
         <p className="text-secondary text-xl max-w-3xl">
-          涵盖 <span className="text-white font-semibold">80+ 交互式专题</span>，
-          以动画和可视化组件帮助你直观理解核心概念。
+          涵盖 <span className="text-primary font-semibold">80+ 交互式专�?/span>�?
+          以动画和可视化组件帮助你直观理解核心概念�?
         </p>
       </div>
 
@@ -51,12 +51,12 @@ const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ onOpenDetail }) => {
               {/* Header */}
               <button
                 onClick={() => setExpandedArea(isExpanded ? null : i)}
-                className="w-full p-5 flex items-center gap-3 text-left hover:bg-white/[0.02] transition-colors"
+                className="w-full p-5 flex items-center gap-3 text-left hover:bg-primary/[0.02] transition-colors"
               >
                 <span className="text-2xl">{area.icon}</span>
                 <div className="flex-1">
                   <div className={`font-semibold text-sm ${c.text}`}>{area.title}</div>
-                  <div className="text-secondary/50 text-xs mt-0.5">{area.topics.length} 个专题</div>
+                  <div className="text-secondary/50 text-xs mt-0.5">{area.topics.length} 个专�?/div>
                 </div>
                 <motion.div animate={{ rotate: isExpanded ? 90 : 0 }} transition={{ duration: 0.2 }}>
                   <BookOpen size={14} className="text-secondary/40" />
@@ -84,10 +84,10 @@ const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ onOpenDetail }) => {
                           areaTitle: area.title,
                           index: ti,
                         })}
-                        className="flex items-center gap-2 px-3 py-2.5 rounded-lg hover:bg-white/5 transition-colors group text-sm text-left w-full"
+                        className="flex items-center gap-2 px-3 py-2.5 rounded-lg hover:bg-primary/5 transition-colors group text-sm text-left w-full"
                       >
                         <div className={`w-1.5 h-1.5 rounded-full ${c.text} shrink-0`} style={{ opacity: 0.5 }} />
-                        <span className="text-secondary group-hover:text-white transition-colors flex-1">{topic.name}</span>
+                        <span className="text-secondary group-hover:text-primary transition-colors flex-1">{topic.name}</span>
                         <ChevronRight size={12} className="opacity-0 group-hover:opacity-50 transition-opacity shrink-0" />
                       </button>
                     ))}

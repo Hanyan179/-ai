@@ -5,7 +5,7 @@ import SectionWrapper from './components/SectionWrapper';
 import DemoReportPage from './pages/demo-report/DemoReportPage';
 import EasyVibePage from './pages/easy-vibe/EasyVibePage';
 import PortfolioPage from './pages/portfolio/PortfolioPage';
-import { ArchitecturePage } from './pages';
+import { ArchitecturePage, ReportPage } from './pages';
 import ReactMarkdown from 'react-markdown';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -39,6 +39,7 @@ const pagePath: Record<string, string> = {
   'easy-vibe': '/easy-vibe',
   portfolio: '/portfolio',
   architecture: '/architecture',
+  'ai-report': '/ai-report',
 };
 
 const componentReports: ReportEntry[] = [
@@ -76,6 +77,18 @@ const componentReports: ReportEntry[] = [
     group: 'AI 编程',
     date: '2026-05-15',
     type: 'Guide',
+    source: 'component',
+  },
+  {
+    page: 'ai-report',
+    label: 'AI 落地报告',
+    title: 'AI Coding 从个人使用到公司级落地',
+    eyebrow: 'Latest Report',
+    description: '关于 AI Coding 在公司级落地的方法论，包括统一入口、资产沉淀、数据治理和团队协作。',
+    status: '最新',
+    group: 'AI 编程',
+    date: '2026-05-15',
+    type: 'Report',
     source: 'component',
   },
   {
@@ -189,6 +202,7 @@ function pageFromPath(pathname: string): SitePage {
   if (path === '/easy-vibe') return 'easy-vibe';
   if (path === '/portfolio') return 'portfolio';
   if (path === '/architecture') return 'architecture';
+  if (path === '/ai-report') return 'ai-report';
   return 'home';
 }
 
@@ -640,6 +654,14 @@ export default function App() {
     return (
       <PageShell currentPage={currentPage} onNavigate={navigateTo}>
         <ArchitecturePage />
+      </PageShell>
+    );
+  }
+
+  if (currentPage === 'ai-report') {
+    return (
+      <PageShell currentPage={currentPage} onNavigate={navigateTo}>
+        <ReportPage />
       </PageShell>
     );
   }

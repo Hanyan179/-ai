@@ -22,9 +22,9 @@ const CurriculumMap: React.FC<CurriculumMapProps> = ({ onOpenDetail }) => {
     <SectionWrapper id="curriculum">
       <div className="flex flex-col items-center text-center mb-16">
         <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">📖 内容导航</span>
-        <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">课程体系</h2>
+        <h2 className="text-5xl md:text-6xl font-bold text-primary mb-6">课程体系</h2>
         <p className="text-secondary text-xl max-w-3xl">
-          从零基础到高级开发，<span className="text-white font-semibold">三个阶段</span>循序渐进。
+          从零基础到高级开发，<span className="text-primary font-semibold">三个阶段</span>循序渐进�?
         </p>
       </div>
 
@@ -40,7 +40,7 @@ const CurriculumMap: React.FC<CurriculumMapProps> = ({ onOpenDetail }) => {
               className={`px-5 py-3 rounded-xl border transition-all duration-200 flex items-center gap-3 ${
                 isActive
                   ? `${c.border} ${c.bg} ${c.text} font-semibold`
-                  : 'border-white/10 bg-white/5 text-secondary hover:text-white hover:border-white/20'
+                  : 'border-primary/10 bg-primary/5 text-secondary hover:text-primary hover:border-primary/20'
               }`}
             >
               <span className="text-xl">{section.icon}</span>
@@ -78,13 +78,13 @@ const CurriculumMap: React.FC<CurriculumMapProps> = ({ onOpenDetail }) => {
                   stageLabel: section.stageLabel,
                   index: ci,
                 })}
-                className={`bento-card rounded-xl p-5 border ${c.border} hover:bg-white/[0.03] transition-all duration-200 group flex items-start gap-4 text-left cursor-pointer`}
+                className={`bento-card rounded-xl p-5 border ${c.border} hover:bg-primary/[0.03] transition-all duration-200 group flex items-start gap-4 text-left cursor-pointer`}
               >
                 <div className={`w-8 h-8 rounded-lg ${c.bg} flex items-center justify-center shrink-0 mt-0.5`}>
                   <span className={`${c.text} text-sm font-bold`}>{String(ci + 1).padStart(2, '0')}</span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-white font-medium text-sm mb-1 group-hover:text-accent transition-colors">
+                  <div className="text-primary font-medium text-sm mb-1 group-hover:text-accent transition-colors">
                     {ch.title}
                   </div>
                   <p className="text-secondary text-xs leading-relaxed">{ch.description}</p>

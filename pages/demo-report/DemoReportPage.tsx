@@ -43,7 +43,7 @@ const SkillCard: React.FC<{ skill: SkillInfo; color: string; onClick: () => void
     <button onClick={onClick} className={`bento-card rounded-xl p-5 text-left ${cs.hover} transition-all duration-200 group cursor-pointer`}>
       <div className="flex items-center gap-3 mb-3">
         <div className={`w-9 h-9 rounded-lg ${cs.icon} flex items-center justify-center`}>{skillIcons[skill.id] || <FileText size={18} />}</div>
-        <div className="flex-1 min-w-0"><div className="text-white font-medium text-sm truncate">{skill.displayName}</div></div>
+        <div className="flex-1 min-w-0"><div className="text-primary font-medium text-sm truncate">{skill.displayName}</div></div>
         <ArrowRight size={14} className={`text-secondary/30 ${cs.arrow} transition-colors`} />
       </div>
       <p className="text-secondary text-xs leading-relaxed line-clamp-2">{skill.description}</p>
@@ -135,7 +135,7 @@ function S1_Hero() {
           <span className="px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-bold tracking-wide uppercase">AI 编程研究报告</span>
           <span className="text-secondary text-xs tracking-wide uppercase border-l border-white/10 pl-3">DreamWeb</span>
         </motion.div>
-        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }} className="font-sans font-bold text-5xl md:text-7xl tracking-tight text-white mb-6 leading-[1.1]">
+        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }} className="font-sans font-bold text-5xl md:text-7xl tracking-tight text-primary mb-6 leading-[1.1]">
           AI 辅助编程<br/>企业落地研究与验证
         </motion.h1>
         <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.4 }} className="font-sans text-xl md:text-2xl text-secondary font-medium tracking-tight max-w-3xl leading-relaxed mb-8">
@@ -185,8 +185,8 @@ function S2_Evolution() {
       <SectionWrapper>
         <div className="flex flex-col items-center text-center mb-16">
           <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">二、相关概念解释</span>
-          <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">AI 辅助编程的演进</h2>
-          <p className="text-secondary text-2xl max-w-3xl">要解决我们复杂业务线和重型框架的 AI 辅助开发问题，<br className="hidden md:block" />首先需要理清企业工程化落地 AI 的<span className="text-white font-semibold">三个必然演进阶段</span>。</p>
+          <h2 className="text-5xl md:text-6xl font-bold text-primary mb-6">AI 辅助编程的演进</h2>
+          <p className="text-secondary text-2xl max-w-3xl">要解决我们复杂业务线和重型框架的 AI 辅助开发问题，<br className="hidden md:block" />首先需要理清企业工程化落地 AI 的<span className="text-primary font-semibold">三个必然演进阶段</span>。</p>
         </div>
         <div className="flex flex-col gap-10">
           {stages.map((item, i) => (
@@ -196,7 +196,7 @@ function S2_Evolution() {
                 <span className={`text-5xl font-black opacity-20 ${item.color}`}>{item.num}</span>
                 <div className={`${item.color}`}>{item.icon}</div>
                 <div>
-                  <div className="text-white font-bold text-2xl">{item.title}</div>
+                  <div className="text-primary font-bold text-2xl">{item.title}</div>
                   <div className="text-secondary text-sm mt-1">{item.sub}</div>
                 </div>
               </div>
@@ -215,7 +215,7 @@ function S2_Evolution() {
           <div className="bento-card rounded-2xl p-6 flex flex-col md:flex-row md:items-center gap-4">
             <div className="flex items-center gap-2 shrink-0">
               <BookOpen size={16} className="text-accent" />
-              <span className="text-white font-semibold text-sm">参考资料</span>
+              <span className="text-primary font-semibold text-sm">参考资料</span>
             </div>
             <div className="flex flex-col md:flex-row gap-3 md:gap-6">
               {[
@@ -244,13 +244,13 @@ function S3_DocAsset() {
     <SectionWrapper>
       <div className="flex flex-col items-center text-center mb-16">
         <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">三、个人认知与核心基建</span>
-        <h2 className="text-5xl md:text-6xl font-bold text-white mb-8">文档即资产</h2>
+        <h2 className="text-5xl md:text-6xl font-bold text-primary mb-8">文档即资产</h2>
         <p className="text-secondary text-2xl max-w-3xl mb-12">AI 时代最好的语言是 Markdown，是文档规范。<br className="hidden md:block" />这也是目前我们公司内部亟待解决的痛点。</p>
       </div>
       {/* 金句 */}
       <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, amount: 0.5 }} transition={{ duration: 0.6 }}
         className="text-center py-12 mb-16">
-        <p className="text-3xl md:text-5xl font-bold text-white leading-tight tracking-tight">
+        <p className="text-3xl md:text-5xl font-bold text-primary leading-tight tracking-tight">
           代码本身已经<span className="text-accent">不值钱</span>了，<br/>值钱的是<span className="text-accent">文档</span>。
         </p>
       </motion.div>
@@ -274,7 +274,7 @@ function S4_Portfolio({ onNavigate }: { onNavigate: () => void }) {
     <SectionWrapper>
       <div className="flex flex-col items-center text-center">
         <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">四、业余时间成果展示</span>
-        <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">个人技术实践</h2>
+        <h2 className="text-5xl md:text-6xl font-bold text-primary mb-6">个人技术实践</h2>
         <p className="text-secondary text-2xl max-w-3xl mb-10">业余时间利用 AI 辅助完成的全栈项目，<br className="hidden md:block" />从 Java 后端到 Web 全栈、iOS 原生开发。</p>
         <button
           onClick={onNavigate}
@@ -295,13 +295,13 @@ function S5_TwoPaths() {
     <SectionWrapper>
       <div className="flex flex-col items-center text-center mb-16">
         <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">五、路径研究</span>
-        <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">两条路径见解</h2>
-        <p className="text-secondary text-2xl max-w-3xl">框架重与否、选择什么框架其实都不重要，<br className="hidden md:block" /><span className="text-white font-semibold">确定性编程（Agent 开发）才是核心。</span></p>
+        <h2 className="text-5xl md:text-6xl font-bold text-primary mb-6">两条路径见解</h2>
+        <p className="text-secondary text-2xl max-w-3xl">框架重与否、选择什么框架其实都不重要，<br className="hidden md:block" /><span className="text-primary font-semibold">确定性编程（Agent 开发）才是核心。</span></p>
       </div>
 
       {/* 主流轻量化框架介绍 */}
       <div className="bento-card rounded-2xl p-8 mb-12">
-        <h3 className="text-white font-semibold text-base mb-6 flex items-center gap-2">
+        <h3 className="text-primary font-semibold text-base mb-6 flex items-center gap-2">
           <Layers size={18} className="text-accent" />
           目前主流的公开轻量化框架一览
         </h3>
@@ -314,7 +314,7 @@ function S5_TwoPaths() {
           ].map((fw, i) => (
             <div key={i} className="bg-white/5 rounded-xl p-5 border border-white/5">
               <div className="flex items-center gap-2 mb-3">
-                <span className="text-white text-base font-semibold">{fw.name}</span>
+                <span className="text-primary text-base font-semibold">{fw.name}</span>
                 <span className="text-[10px] px-1.5 py-0.5 rounded bg-accent/20 text-accent">{fw.tag}</span>
               </div>
               <p className="text-secondary text-sm leading-relaxed">{fw.desc}</p>
@@ -367,7 +367,7 @@ function S6_SceneDef() {
     <SectionWrapper>
       <div className="flex flex-col items-center text-center mb-16">
         <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">六、场景定义</span>
-        <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">明确低代码与 AI 的业务边界</h2>
+        <h2 className="text-5xl md:text-6xl font-bold text-primary mb-6">明确低代码与 AI 的业务边界</h2>
         <p className="text-secondary text-2xl max-w-3xl">针对 DreamWeb 等平台的实际情况，<br className="hidden md:block" />我们需要明确什么需要 AI 做，什么不需要。</p>
       </div>
       <div className="grid md:grid-cols-3 gap-8 mb-14">
@@ -399,7 +399,7 @@ function S6_SceneDef() {
             </tr></thead>
             <tbody>{SCENARIOS.map((s, i) => (
               <tr key={i} className="border-b border-white/5 last:border-0 hover:bg-white/[0.02]">
-                <td className="px-6 py-4 text-white">{s.name}</td>
+                <td className="px-6 py-4 text-primary">{s.name}</td>
                 <td className="text-center px-4 py-4"><span className={`text-sm font-medium ${s.frequency === '高' ? 'text-green-400' : s.frequency === '中' ? 'text-yellow-400' : 'text-secondary'}`}>{s.frequency}</span></td>
                 <td className="text-center px-4 py-4 text-sm">{s.patternFixed ? '✓' : '✗'}</td>
                 <td className="text-center px-4 py-4 text-sm">{s.aiCapable ? '✓' : '✗'}</td>
@@ -458,7 +458,7 @@ function S7_SkillsGallery({ dsfaSkills, p2340Skills, generalSkills, onSelect }: 
     <SectionWrapper>
       <div className="flex flex-col items-center text-center mb-16">
         <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">Skills 详情</span>
-        <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">本次编写的 Skills</h2>
+        <h2 className="text-5xl md:text-6xl font-bold text-primary mb-6">本次编写的 Skills</h2>
         <p className="text-secondary text-2xl max-w-3xl">点击任意 Skill 卡片查看详细内容。<br className="hidden md:block" />昨天时间不够用，随便写了几个 Skills，可以作为相关的尝试。</p>
       </div>
       <div className="mb-10">
@@ -487,7 +487,7 @@ function S7_SkillsGallery({ dsfaSkills, p2340Skills, generalSkills, onSelect }: 
             className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-accent/30 hover:bg-accent/5 transition-all group">
             <ExternalLink size={16} className="text-accent shrink-0 opacity-60 group-hover:opacity-100" />
             <div>
-              <div className="text-white text-sm font-medium group-hover:text-accent transition-colors">{m.name}</div>
+              <div className="text-primary text-sm font-medium group-hover:text-accent transition-colors">{m.name}</div>
               <div className="text-secondary text-xs mt-1">{m.desc}</div>
             </div>
           </a>
@@ -506,7 +506,7 @@ function S8_DemoOutput() {
     <SectionWrapper>
       <div className="flex flex-col items-center text-center mb-16">
         <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">七、Demo 测试情况汇报</span>
-        <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">初步 Demo 跑通测试</h2>
+        <h2 className="text-5xl md:text-6xl font-bold text-primary mb-6">初步 Demo 跑通测试</h2>
         <p className="text-secondary text-2xl max-w-3xl">基于路径 2 和场景定义，做了两组 Demo 跑通测试。<br className="hidden md:block" />如有需要，随时可以进行现场演示。</p>
       </div>
 
@@ -515,7 +515,7 @@ function S8_DemoOutput() {
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-xl bg-blue-400/10 flex items-center justify-center text-blue-400 text-lg font-bold">A</div>
           <div>
-            <div className="text-white text-lg font-semibold">{DEMO_DSFA.name}</div>
+            <div className="text-primary text-lg font-semibold">{DEMO_DSFA.name}</div>
             <div className="text-secondary text-sm mt-1">{DEMO_DSFA.desc}</div>
           </div>
         </div>
@@ -532,7 +532,7 @@ function S8_DemoOutput() {
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-xl bg-green-400/10 flex items-center justify-center text-green-400 text-lg font-bold">B</div>
           <div>
-            <div className="text-white text-lg font-semibold">DreamWeb 党建模块 · 4 个场景</div>
+            <div className="text-primary text-lg font-semibold">DreamWeb 党建模块 · 4 个场景</div>
             <div className="text-secondary text-sm mt-1">基于党员花名册模块，点击查看每个场景的详细交互过程</div>
           </div>
         </div>
@@ -573,7 +573,7 @@ function S8_DemoOutput() {
       </div>
 
       <div className="bento-card rounded-2xl p-8 text-center">
-        <p className="text-white text-xl font-semibold">核心验证：只要基于写好的 Skill 文档，即使是相对较重的业务流转，AI 也能稳定产出符合规范的代码。</p>
+        <p className="text-primary text-xl font-semibold">核心验证：只要基于写好的 Skill 文档，即使是相对较重的业务流转，AI 也能稳定产出符合规范的代码。</p>
       </div>
 
       {/* Demo 详情弹窗 */}
@@ -671,19 +671,19 @@ function S9_ToolCompare() {
     <SectionWrapper>
       <div className="flex flex-col items-center text-center mb-16">
         <span className="text-accent text-xs font-bold uppercase tracking-widest mb-4">八、工具形态与使用方案</span>
-        <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">AI IDE vs AI CLI</h2>
+        <h2 className="text-5xl md:text-6xl font-bold text-primary mb-6">AI IDE vs AI CLI</h2>
         <p className="text-secondary text-2xl max-w-3xl">目前 AI 辅助编程工具主要分为两类，<br className="hidden md:block" />我们需要认清它们的优缺点。</p>
       </div>
       <div className="grid md:grid-cols-2 gap-10 mb-14">
         <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
           className="bento-card rounded-2xl p-8">
-          <div className="flex items-center gap-4 mb-6"><Monitor size={28} className="text-blue-400" /><span className="text-white font-bold text-xl">AI IDE</span><span className="text-secondary text-sm">如 Trae 等可视化工具</span></div>
+          <div className="flex items-center gap-4 mb-6"><Monitor size={28} className="text-blue-400" /><span className="text-primary font-bold text-xl">AI IDE</span><span className="text-secondary text-sm">如 Trae 等可视化工具</span></div>
           <div className="mb-5"><span className="text-success text-sm font-semibold">优点：</span><p className="text-secondary text-base mt-2 leading-relaxed">可视化、对新手友好，内置了很好的 Skills 机制交互方便，对于初测和简单场景非常直观。</p></div>
           <div><span className="text-danger text-sm font-semibold">缺点：</span><p className="text-secondary text-base mt-2 leading-relaxed">单线程操作带来的极大浪费。它本质上是线性的，如果什么都让 AI 做了，人就只能在旁边等窗口逐行生成代码。开发人员不能一直等待，这个时间成本是极大的浪费。</p></div>
         </motion.div>
         <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
           className="bento-card rounded-2xl p-8">
-          <div className="flex items-center gap-4 mb-6"><Terminal size={28} className="text-green-400" /><span className="text-white font-bold text-xl">AI CLI</span><span className="text-secondary text-sm">命令行终端多线程流派</span></div>
+          <div className="flex items-center gap-4 mb-6"><Terminal size={28} className="text-green-400" /><span className="text-primary font-bold text-xl">AI CLI</span><span className="text-secondary text-sm">命令行终端多线程流派</span></div>
           <div className="mb-5"><span className="text-success text-sm font-semibold">优点：</span><p className="text-secondary text-base mt-2 leading-relaxed">多线程并发解决问题。通过终端操作和分配机制，可以多窗口同时运行。比如：交代完问题 A，它在后台跑着；马上切到窗口 2 去处理问题 B。这种并发效率是 IDE 无法比拟的。</p></div>
           <div><span className="text-danger text-sm font-semibold">缺点：</span><p className="text-secondary text-base mt-2 leading-relaxed">门槛高，需要开发者具备极强的任务拆解能力和系统大局观，并且需要时刻保持"心流状态"和"跳跃状态"，身累心累，打字累，思考累。</p></div>
         </motion.div>

@@ -18,7 +18,7 @@ const Hero: React.FC<HeroProps> = ({ onScrollTo }) => {
           transition={{ duration: 0.8, delay: 0.1 }}
           className="mb-8"
         >
-          <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-purple-500/20 via-accent/20 to-green-500/20 border border-white/10 flex items-center justify-center mx-auto mb-6">
+          <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-purple-500/20 via-accent/20 to-green-500/20 border border-primary/10 flex items-center justify-center mx-auto mb-6">
             <span className="text-5xl">🎵</span>
           </div>
         </motion.div>
@@ -31,7 +31,7 @@ const Hero: React.FC<HeroProps> = ({ onScrollTo }) => {
           className="mb-6 flex items-center gap-3 flex-wrap justify-center"
         >
           <span className="px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-bold tracking-wide">
-            Datawhale 开源项目
+            Datawhale 开源项�?
           </span>
           <span className="px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-bold tracking-wide">
             CC BY-NC-SA 4.0
@@ -43,7 +43,7 @@ const Hero: React.FC<HeroProps> = ({ onScrollTo }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="font-sans font-bold text-5xl md:text-7xl tracking-tight text-white mb-6 leading-[1.1]"
+          className="font-sans font-bold text-5xl md:text-7xl tracking-tight text-primary mb-6 leading-[1.1]"
         >
           Easy-Vibe
         </motion.h1>
@@ -55,7 +55,7 @@ const Hero: React.FC<HeroProps> = ({ onScrollTo }) => {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="font-sans text-xl md:text-2xl text-secondary font-medium tracking-tight max-w-3xl leading-relaxed mb-4"
         >
-          直接上手，一起 vibe！<span className="text-white">会说话就会做应用。</span>
+          直接上手，一�?vibe�?span className="text-primary">会说话就会做应用�?/span>
         </motion.p>
         <motion.p
           initial={{ opacity: 0, y: 20 }}
@@ -63,10 +63,10 @@ const Hero: React.FC<HeroProps> = ({ onScrollTo }) => {
           transition={{ duration: 0.8, delay: 0.45 }}
           className="text-secondary/60 text-base mb-10 max-w-2xl"
         >
-          Jump right in and vibe together — if you can talk, you can build apps.
+          Jump right in and vibe together �?if you can talk, you can build apps.
         </motion.p>
 
-        {/* CTA — 站内锚点跳转 */}
+        {/* CTA �?站内锚点跳转 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -75,21 +75,21 @@ const Hero: React.FC<HeroProps> = ({ onScrollTo }) => {
         >
           <button
             onClick={() => onScrollTo('learning-paths')}
-            className="px-6 py-3 rounded-xl bg-accent text-white font-semibold hover:bg-accent/90 transition-all duration-200 flex items-center gap-2"
+            className="px-6 py-3 rounded-xl bg-accent text-primary font-semibold hover:bg-accent/90 transition-all duration-200 flex items-center gap-2"
           >
-            🚀 开始探索
+            🚀 开始探�?
           </button>
           <button
             onClick={() => onScrollTo('curriculum')}
-            className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-white font-semibold hover:bg-white/10 transition-all duration-200 flex items-center gap-2"
+            className="px-6 py-3 rounded-xl bg-primary/5 border border-primary/10 text-primary font-semibold hover:bg-primary/10 transition-all duration-200 flex items-center gap-2"
           >
             📖 课程体系
           </button>
           <button
             onClick={() => onScrollTo('knowledge')}
-            className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-white font-semibold hover:bg-white/10 transition-all duration-200 flex items-center gap-2"
+            className="px-6 py-3 rounded-xl bg-primary/5 border border-primary/10 text-primary font-semibold hover:bg-primary/10 transition-all duration-200 flex items-center gap-2"
           >
-            ✨ 知识库
+            �?知识�?
           </button>
         </motion.div>
 
@@ -104,12 +104,12 @@ const Hero: React.FC<HeroProps> = ({ onScrollTo }) => {
             <Star size={14} className="text-yellow-400" />
             <span>GitHub Trending</span>
           </div>
-          <div className="h-4 w-px bg-white/10" />
+          <div className="h-4 w-px bg-primary/10" />
           <div className="flex items-center gap-2">
             <GitFork size={14} className="text-green-400" />
-            <span>开源社区驱动</span>
+            <span>开源社区驱�?/span>
           </div>
-          <div className="h-4 w-px bg-white/10" />
+          <div className="h-4 w-px bg-primary/10" />
           <div><span>10+ 语言支持</span></div>
         </motion.div>
       </div>

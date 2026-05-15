@@ -15,7 +15,7 @@ const EngineerRedefinition: React.FC = () => {
       <div className="mb-24">
         <div className="text-center mb-12">
             <span className="text-accent font-semibold tracking-wide text-sm uppercase mb-2 block">Mindset Shift</span>
-            <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight mb-4">{ENGINEER_DEFN_DATA.title}</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-primary tracking-tight mb-4">{ENGINEER_DEFN_DATA.title}</h2>
             <p className="text-secondary max-w-2xl mx-auto leading-relaxed">
                 {ENGINEER_DEFN_DATA.desc}
             </p>
@@ -31,14 +31,14 @@ const EngineerRedefinition: React.FC = () => {
                         
                         <div className="relative z-10">
                             <div className="flex items-center justify-between mb-6">
-                                <div className={`p-3 rounded-xl bg-surfaceHighlight border border-white/5 ${item.color}`}>
+                                <div className={`p-3 rounded-xl bg-surfaceHighlight border border-primary/5 ${item.color}`}>
                                     <Icon size={28} />
                                 </div>
-                                <span className="text-xs font-bold uppercase tracking-wider text-white/20">0{index + 1}</span>
+                                <span className="text-xs font-bold uppercase tracking-wider text-primary/20">0{index + 1}</span>
                             </div>
                             
-                            <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
-                            <p className="text-secondary text-sm leading-relaxed border-t border-white/5 pt-4 mt-2">
+                            <h3 className="text-xl font-bold text-primary mb-3">{item.title}</h3>
+                            <p className="text-secondary text-sm leading-relaxed border-t border-primary/5 pt-4 mt-2">
                                 {item.desc}
                             </p>
                         </div>
