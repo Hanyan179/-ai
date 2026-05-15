@@ -6,6 +6,7 @@ import DemoReportPage from './pages/demo-report/DemoReportPage';
 import EasyVibePage from './pages/easy-vibe/EasyVibePage';
 import PortfolioPage from './pages/portfolio/PortfolioPage';
 import { ArchitecturePage } from './pages';
+import ReactMarkdown from 'react-markdown';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ChevronDown, Copy, Check, X,
@@ -13,23 +14,186 @@ import {
   ExternalLink, Sparkles,
 } from 'lucide-react';
 
-type SitePage = 'home' | 'demo-report' | 'easy-vibe' | 'portfolio' | 'architecture';
+type SitePage = string;
 
-const pagePath: Record<SitePage, string> = {
+type ReportEntry = {
+  page: SitePage;
+  label: string;
+  title: string;
+  eyebrow: string;
+  description: string;
+  status: string;
+  group: string;
+  date: string;
+  type: string;
+  path?: string;
+  content?: string;
+  source: 'system' | 'component' | 'markdown';
+};
+
+const pagePath: Record<string, string> = {
   home: '/',
+  reports: '/reports',
+  'vibe-coding': '/vibe-coding',
   'demo-report': '/demo-report',
   'easy-vibe': '/easy-vibe',
   portfolio: '/portfolio',
   architecture: '/architecture',
 };
 
+const componentReports: ReportEntry[] = [
+  {
+    page: 'home',
+    label: '总站',
+    title: 'hansen 静涵 含盐',
+    eyebrow: 'Index',
+    description: '个人报告总站，用来沉淀过往页面、项目材料和后续新增报告。',
+    status: '入口',
+    group: 'system',
+    date: '2026-05',
+    type: 'Home',
+    source: 'system',
+  },
+  {
+    page: 'reports',
+    label: '报告库',
+    title: '报告库',
+    eyebrow: 'Library',
+    description: '所有历史报告和后续新增页面的集中目录。',
+    status: '目录',
+    group: 'system',
+    date: '2026-05',
+    type: 'Index',
+    source: 'system',
+  },
+  {
+    page: 'vibe-coding',
+    label: 'Vibe 指南',
+    title: 'Vibe Coding 实战指南',
+    eyebrow: 'Current Report',
+    description: '当前首页内容，面向 AI 编程入门、Trae 使用流程和常见问题。',
+    status: '当前',
+    group: 'AI 编程',
+    date: '2026-05',
+    type: 'Guide',
+    source: 'component',
+  },
+  {
+    page: 'demo-report',
+    label: 'AI 报告',
+    title: 'AI Coding Demo 测试报告',
+    eyebrow: 'Historical Report',
+    description: '关于 AI 编程研究、Skills、DSFA/P2340 场景验证的旧版报告。',
+    status: '历史',
+    group: 'AI 编程',
+    date: '2026-04',
+    type: 'Report',
+    source: 'component',
+  },
+  {
+    page: 'easy-vibe',
+    label: '演示场景',
+    title: 'Easy Vibe 演示场景库',
+    eyebrow: 'Demo Collection',
+    description: '用于现场演示的一组 AI 生成应用场景和可复制提示词。',
+    status: '可扩展',
+    group: '演示资产',
+    date: '2026-04',
+    type: 'Demo',
+    source: 'component',
+  },
+  {
+    page: 'portfolio',
+    label: '作品集',
+    title: '过往作品与能力展示',
+    eyebrow: 'Portfolio',
+    description: '保留原来的作品展示页面，作为个人项目与执行证据沉淀。',
+    status: '历史',
+    group: '个人资产',
+    date: '2026-03',
+    type: 'Portfolio',
+    source: 'component',
+  },
+  {
+    page: 'architecture',
+    label: '架构报告',
+    title: '智能体架构与知识库设计',
+    eyebrow: 'Architecture',
+    description: '架构图、知识库系统、流程编排和能力分层相关内容。',
+    status: '方案',
+    group: '架构方案',
+    date: '2026-02',
+    type: 'Architecture',
+    source: 'component',
+  },
+];
+
+const markdownModules = import.meta.glob('./reports/*.md', {
+  eager: true,
+  query: '?raw',
+  import: 'default',
+}) as Record<string, string>;
+
+function parseFrontmatter(raw: string) {
+  const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
+  const data: Record<string, string> = {};
+  if (!match) return { data, body: raw.trim() };
+
+  match[1].split(/\r?\n/).forEach(line => {
+    const index = line.indexOf(':');
+    if (index === -1) return;
+    const key = line.slice(0, index).trim();
+    const value = line.slice(index + 1).trim().replace(/^['"]|['"]$/g, '');
+    data[key] = value;
+  });
+
+  return { data, body: raw.slice(match[0].length).trim() };
+}
+
+function slugFromFilePath(path: string) {
+  return path.split('/').pop()?.replace(/\.md$/, '') ?? path;
+}
+
+const markdownReports: ReportEntry[] = Object.entries(markdownModules).filter(([path]) => {
+  return !slugFromFilePath(path).startsWith('_');
+}).map(([path, raw]) => {
+  const { data, body } = parseFrontmatter(raw);
+  const slug = data.slug || slugFromFilePath(path);
+  const title = data.title || slug;
+
+  return {
+    page: `md:${slug}`,
+    label: data.label || title,
+    title,
+    eyebrow: data.eyebrow || 'Markdown Report',
+    description: data.description || data.summary || '',
+    status: data.status || '新增',
+    group: data.group || 'Markdown 报告',
+    date: data.date || '2026-05',
+    type: data.type || 'Report',
+    path: `/reports/${slug}`,
+    content: body,
+    source: 'markdown',
+  };
+});
+
+const siteReports: ReportEntry[] = [...componentReports, ...markdownReports];
+
 function pageFromPath(pathname: string): SitePage {
   const path = pathname.replace(/\/$/, '') || '/';
+  if (path === '/reports') return 'reports';
+  const markdownReport = markdownReports.find(item => item.path === path);
+  if (markdownReport) return markdownReport.page;
+  if (path === '/vibe-coding') return 'vibe-coding';
   if (path === '/demo-report') return 'demo-report';
   if (path === '/easy-vibe') return 'easy-vibe';
   if (path === '/portfolio') return 'portfolio';
   if (path === '/architecture') return 'architecture';
   return 'home';
+}
+
+function pathForPage(page: SitePage) {
+  return siteReports.find(item => item.page === page)?.path || pagePath[page] || '/';
 }
 
 function PageSwitcher({
@@ -39,30 +203,261 @@ function PageSwitcher({
   currentPage: SitePage;
   onNavigate: (page: SitePage) => void;
 }) {
-  const items: Array<{ page: SitePage; label: string }> = [
-    { page: 'home', label: '当前内容' },
-    { page: 'demo-report', label: '旧版报告' },
-    { page: 'easy-vibe', label: '演示页面' },
-    { page: 'portfolio', label: '作品页面' },
-    { page: 'architecture', label: '架构页面' },
-  ];
+  const navItems = siteReports.filter(item => item.page === 'home' || item.page === 'reports');
+  const currentReport = siteReports.find(item => item.page === currentPage);
 
   return (
-    <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-white/10 bg-black/70 px-3 py-2 backdrop-blur-xl">
-      {items.map(item => (
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-[#111111]/10 bg-[#f7f7f4]/90 backdrop-blur-xl">
+      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 md:px-8">
         <button
-          key={item.page}
-          onClick={() => onNavigate(item.page)}
-          className={`rounded-xl px-3 py-1.5 text-xs font-medium transition-colors ${
-            currentPage === item.page
-              ? 'bg-accent text-white'
-              : 'text-secondary hover:bg-white/10 hover:text-white'
-          }`}
+          type="button"
+          onClick={() => onNavigate('home')}
+          className="text-left text-sm font-semibold tracking-tight text-[#111111]"
         >
-          {item.label}
+          hansen / 静涵 / 含盐
         </button>
-      ))}
+        <div className="flex items-center gap-1">
+          {currentReport && currentReport.page !== 'home' && currentReport.page !== 'reports' && (
+            <span className="hidden px-3 py-1.5 text-xs text-[#666666] md:inline-flex">
+              {currentReport.title}
+            </span>
+          )}
+          {navItems.map(item => (
+            <button
+              key={item.page}
+              onClick={() => onNavigate(item.page)}
+              className={`px-3 py-1.5 text-xs font-medium transition-colors ${
+                currentPage === item.page
+                  ? 'bg-[#111111] text-white'
+                  : 'text-[#555555] hover:bg-[#111111]/5 hover:text-[#111111]'
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+      </div>
     </nav>
+  );
+}
+
+function ReportPortal({ onNavigate }: { onNavigate: (page: SitePage) => void }) {
+  const reports = siteReports
+    .filter(item => item.group !== 'system')
+    .sort((a, b) => b.date.localeCompare(a.date));
+  const featuredReports = reports.slice(0, 5);
+  const groups = Array.from(new Set(reports.map(item => item.group)));
+
+  return (
+    <main className="min-h-screen bg-[#f7f7f4] px-5 py-20 text-[#111111] md:px-10 md:py-24">
+      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[minmax(0,1fr)_360px]">
+        <section>
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45 }}
+            className="border-b border-[#111111]/15 pb-8"
+          >
+            <div className="mb-8 flex items-center justify-between gap-4 text-xs font-semibold uppercase tracking-[0.2em] text-[#666666]">
+              <span>Report Index</span>
+              <span>Updated 2026.05</span>
+            </div>
+            <h1 className="max-w-4xl text-5xl font-semibold tracking-tight text-[#111111] md:text-7xl">
+              AI 工作报告与项目沉淀
+            </h1>
+            <p className="mt-6 max-w-3xl text-lg leading-8 text-[#4a4a4a]">
+              一个面向汇报、复盘和作品沉淀的个人总站。当前内容覆盖 AI 编程实践、演示资产、架构方案与历史作品，后续页面会按同一套报告结构持续归档。
+            </p>
+          </motion.div>
+
+          <div className="grid border-b border-[#111111]/15 md:grid-cols-3">
+            {[
+              [String(reports.length).padStart(2, '0'), '已收录报告'],
+              [String(groups.length).padStart(2, '0'), '主题分组'],
+              [featuredReports[0]?.date ?? '2026-05', '最近更新'],
+            ].map(([value, label]) => (
+              <div key={label} className="border-[#111111]/15 py-6 md:border-r md:px-6 last:md:border-r-0">
+                <div className="text-4xl font-semibold text-[#111111]">{value}</div>
+                <div className="mt-2 text-sm text-[#666666]">{label}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="grid border-b border-[#111111]/15 py-10 md:grid-cols-[180px_1fr] md:gap-10">
+            <div className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-[#777777] md:mb-0">
+              Executive View
+            </div>
+            <div className="grid gap-8 md:grid-cols-2">
+              <div>
+                <h2 className="text-2xl font-semibold tracking-tight text-[#111111]">总站定位</h2>
+                <p className="mt-4 text-sm leading-7 text-[#4a4a4a]">
+                  首页承载整体叙事、近期重点和主题覆盖情况，适合作为对外查看和内部复盘的第一入口。
+                </p>
+              </div>
+              <div>
+                <h2 className="text-2xl font-semibold tracking-tight text-[#111111]">内容边界</h2>
+                <p className="mt-4 text-sm leading-7 text-[#4a4a4a]">
+                  每个页面都按报告材料处理：有日期、类型、主题、状态和摘要，适合后续对外汇报、内部复盘或个人作品归档。
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-10">
+            <div className="mb-4 flex items-end justify-between gap-4">
+              <div>
+                <div className="text-xs font-semibold uppercase tracking-[0.2em] text-[#777777]">Recent Reports</div>
+                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#111111]">近期报告</h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => onNavigate('reports')}
+                className="inline-flex items-center gap-2 border border-[#111111] px-4 py-2 text-sm font-semibold text-[#111111] transition-colors hover:bg-[#111111] hover:text-white"
+              >
+                查看全部
+                <ExternalLink size={14} />
+              </button>
+            </div>
+
+            <div className="divide-y divide-[#111111]/10 border-y border-[#111111]/10">
+              {featuredReports.map(item => (
+                <button
+                  key={item.page}
+                  type="button"
+                  onClick={() => onNavigate(item.page)}
+                  className="grid w-full gap-3 py-5 text-left transition-colors hover:bg-[#111111]/[0.03] md:grid-cols-[96px_120px_1fr_88px]"
+                >
+                  <span className="text-sm text-[#666666]">{item.date}</span>
+                  <span className="text-sm text-[#666666]">{item.type}</span>
+                  <span>
+                    <span className="block text-lg font-semibold text-[#111111]">{item.title}</span>
+                    <span className="mt-1 block text-sm leading-6 text-[#555555]">{item.description}</span>
+                  </span>
+                  <span className="text-sm text-[#777777] md:text-right">{item.status}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-12 grid gap-8 border-t border-[#111111]/15 pt-10 md:grid-cols-[180px_1fr]">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-[#777777]">
+              Coverage
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              {groups.map(group => {
+                const count = reports.filter(item => item.group === group).length;
+                return (
+                  <div key={group} className="border border-[#111111]/12 bg-white/35 p-5">
+                    <div className="text-sm text-[#777777]">{String(count).padStart(2, '0')} reports</div>
+                    <div className="mt-3 text-xl font-semibold text-[#111111]">{group}</div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        <aside className="lg:sticky lg:top-24 lg:self-start">
+          <div className="border border-[#111111]/15 bg-[#f2f2ee] p-6">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-[#777777]">Personal Hub</div>
+            <div className="mt-8 space-y-2">
+              <div className="text-5xl font-semibold tracking-tight text-[#111111]">hansen</div>
+              <div className="text-3xl font-semibold tracking-tight text-[#111111]">静涵</div>
+              <div className="text-3xl font-semibold tracking-tight text-[#111111]">含盐</div>
+            </div>
+            <p className="mt-8 text-sm leading-7 text-[#4a4a4a]">
+              用正式汇报的形式保存研究、演示、架构和项目材料，形成稳定的个人工作资料入口。
+            </p>
+            <div className="mt-8 border-t border-[#111111]/15 pt-6">
+              <div className="text-xs font-semibold uppercase tracking-[0.2em] text-[#777777]">Current Focus</div>
+              <dl className="mt-4 space-y-3 text-sm">
+                <div className="flex justify-between gap-4">
+                  <dt className="text-[#777777]">Research</dt>
+                  <dd className="text-right text-[#111111]">AI 编程</dd>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <dt className="text-[#777777]">Assets</dt>
+                  <dd className="text-right text-[#111111]">演示材料</dd>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <dt className="text-[#777777]">System</dt>
+                  <dd className="text-right text-[#111111]">架构方案</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+  );
+}
+
+function ReportsLibrary({ onNavigate }: { onNavigate: (page: SitePage) => void }) {
+  const pages = siteReports.filter(item => item.group !== 'system');
+  const groups = Array.from(new Set(pages.map(item => item.group)));
+
+  return (
+    <main className="min-h-screen bg-[#f7f7f4] px-6 py-20 text-[#111111] md:px-12 md:py-28">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-12 border-b border-[#111111]/15 pb-8">
+          <div className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-[#777777]">Library</div>
+          <h1 className="mb-4 text-4xl font-semibold tracking-tight text-[#111111] md:text-6xl">报告库</h1>
+          <p className="max-w-2xl text-base leading-8 text-[#4a4a4a]">
+            这里保留所有历史页面与后续报告入口，按主题分组，便于快速定位、复盘和展示。
+          </p>
+        </div>
+
+        <div className="space-y-10">
+          {groups.map(group => (
+            <section key={group}>
+              <h2 className="mb-4 border-b border-[#111111]/15 pb-3 text-sm font-semibold uppercase tracking-[0.24em] text-[#666666]">{group}</h2>
+              <div className="divide-y divide-[#111111]/10 border-y border-[#111111]/10">
+                {pages.filter(item => item.group === group).map(item => (
+                  <button
+                    key={item.page}
+                    type="button"
+                    onClick={() => onNavigate(item.page)}
+                    className="group grid w-full gap-4 py-5 text-left transition-colors hover:bg-[#111111]/[0.03] md:grid-cols-[100px_120px_1fr_100px]"
+                  >
+                    <div className="text-sm text-[#777777]">{item.date}</div>
+                    <div className="text-sm text-[#777777]">{item.type}</div>
+                    <div>
+                      <h3 className="mb-2 text-xl font-semibold text-[#111111] group-hover:underline">{item.title}</h3>
+                      <p className="text-sm leading-7 text-[#555555]">{item.description}</p>
+                    </div>
+                    <div className="text-sm text-[#777777] md:text-right">{item.status}</div>
+                  </button>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      </div>
+    </main>
+  );
+}
+
+function MarkdownReportPage({ report }: { report: ReportEntry }) {
+  return (
+    <main className="min-h-screen bg-[#f7f7f4] px-5 py-20 text-[#111111] md:px-10 md:py-24">
+      <article className="mx-auto max-w-4xl">
+        <header className="border-b border-[#111111]/15 pb-8">
+          <div className="mb-6 flex flex-wrap gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#777777]">
+            <span>{report.date}</span>
+            <span>{report.type}</span>
+            <span>{report.status}</span>
+          </div>
+          <h1 className="text-4xl font-semibold tracking-tight text-[#111111] md:text-6xl">{report.title}</h1>
+          {report.description && (
+            <p className="mt-6 text-lg leading-8 text-[#4a4a4a]">{report.description}</p>
+          )}
+        </header>
+
+        <div className="markdown-report mt-10 text-[#222222]">
+          <ReactMarkdown>{report.content || ''}</ReactMarkdown>
+        </div>
+      </article>
+    </main>
   );
 }
 
@@ -76,7 +471,7 @@ function PageShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-background min-h-screen text-primary selection:bg-white/20 selection:text-white">
+    <div className="min-h-screen bg-[#f7f7f4] text-[#111111] selection:bg-[#111111] selection:text-white">
       <ProgressBar />
       <PageSwitcher currentPage={currentPage} onNavigate={onNavigate} />
       <div className="pt-16">{children}</div>
@@ -98,7 +493,7 @@ const ProgressBar = () => {
   }, []);
   return (
     <div className="fixed top-0 left-0 w-full h-[2px] bg-transparent z-40">
-      <div className="h-full bg-accent/80 transition-all duration-100" style={{ width: `${p * 100}%` }} />
+      <div className="h-full bg-[#111111] transition-all duration-100" style={{ width: `${p * 100}%` }} />
     </div>
   );
 };
@@ -204,9 +599,18 @@ export default function App() {
 
   const navigateTo = (page: SitePage) => {
     setCurrentPage(page);
-    window.history.pushState(null, '', pagePath[page]);
+    window.history.pushState(null, '', pathForPage(page));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  const markdownReport = siteReports.find(item => item.page === currentPage && item.source === 'markdown');
+  if (markdownReport) {
+    return (
+      <PageShell currentPage={currentPage} onNavigate={navigateTo}>
+        <MarkdownReportPage report={markdownReport} />
+      </PageShell>
+    );
+  }
 
   if (currentPage === 'demo-report') {
     return (
@@ -236,6 +640,22 @@ export default function App() {
     return (
       <PageShell currentPage={currentPage} onNavigate={navigateTo}>
         <ArchitecturePage />
+      </PageShell>
+    );
+  }
+
+  if (currentPage === 'reports') {
+    return (
+      <PageShell currentPage={currentPage} onNavigate={navigateTo}>
+        <ReportsLibrary onNavigate={navigateTo} />
+      </PageShell>
+    );
+  }
+
+  if (currentPage === 'home') {
+    return (
+      <PageShell currentPage={currentPage} onNavigate={navigateTo}>
+        <ReportPortal onNavigate={navigateTo} />
       </PageShell>
     );
   }

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="zh-CN" class="dark">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Coding Demo 测试报告</title>
+    <title>hansen 静涵 含盐｜报告总站</title>
     <!-- Google Fonts: Inter (The closest open source match to San Francisco) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,11 +20,11 @@
               sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
             },
             colors: {
-              background: '#000000', // Pure Black for depth
-              surface: '#1C1C1E',    // Apple System Gray 6 (Dark)
-              surfaceHighlight: '#2C2C2E',
-              primary: '#F5F5F7',    // Apple Off-White
-              secondary: '#86868B',  // Apple Gray Text
+              background: '#F7F7F4',
+              surface: '#FFFFFF',
+              surfaceHighlight: '#EFEFEB',
+              primary: '#111111',
+              secondary: '#555555',
               accent: '#2997FF',     // Apple System Blue
               success: '#30D158',    // Apple System Green
               warning: '#FF9F0A',    // Apple System Orange
@@ -32,7 +32,7 @@
             },
             backgroundImage: {
               'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-              'subtle-glow': 'conic-gradient(from 180deg at 50% 50%, #1C1C1E 0deg, #2C2C2E 180deg, #1C1C1E 360deg)',
+              'subtle-glow': 'conic-gradient(from 180deg at 50% 50%, #F7F7F4 0deg, #EFEFEB 180deg, #F7F7F4 360deg)',
             },
             animation: {
               'fade-in': 'fadeIn 0.8s ease-out forwards',
@@ -64,12 +64,12 @@
         background: transparent; 
       }
 
-      /* Apple-style Glassmorphism / Bento Cards */
+      /* Report-style cards */
       .bento-card {
-        background-color: rgba(28, 28, 30, 0.6);
+        background-color: rgba(255, 255, 255, 0.72);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(17, 17, 17, 0.08);
       }
       
       .text-balance {
@@ -81,6 +81,86 @@
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
+      }
+
+      .markdown-report h1,
+      .markdown-report h2,
+      .markdown-report h3 {
+        color: #111111;
+        font-weight: 650;
+        letter-spacing: 0;
+      }
+
+      .markdown-report h1 {
+        font-size: 2.25rem;
+        line-height: 1.15;
+        margin: 2.25rem 0 1rem;
+      }
+
+      .markdown-report h2 {
+        font-size: 1.75rem;
+        line-height: 1.25;
+        margin: 2.5rem 0 1rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid rgba(17, 17, 17, 0.12);
+      }
+
+      .markdown-report h3 {
+        font-size: 1.2rem;
+        line-height: 1.35;
+        margin: 1.75rem 0 0.75rem;
+      }
+
+      .markdown-report p,
+      .markdown-report li {
+        color: #404040;
+        font-size: 1rem;
+        line-height: 1.8;
+      }
+
+      .markdown-report ul,
+      .markdown-report ol {
+        margin: 1rem 0 1.5rem;
+        padding-left: 1.5rem;
+      }
+
+      .markdown-report li {
+        margin: 0.35rem 0;
+      }
+
+      .markdown-report blockquote {
+        margin: 1.5rem 0;
+        padding: 1rem 1.25rem;
+        border-left: 3px solid #111111;
+        background: rgba(255, 255, 255, 0.55);
+      }
+
+      .markdown-report table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.5rem 0;
+        font-size: 0.95rem;
+      }
+
+      .markdown-report th,
+      .markdown-report td {
+        border-bottom: 1px solid rgba(17, 17, 17, 0.12);
+        padding: 0.75rem 0.5rem;
+        text-align: left;
+      }
+
+      .markdown-report code {
+        background: rgba(17, 17, 17, 0.06);
+        border-radius: 4px;
+        padding: 0.1rem 0.35rem;
+      }
+
+      .markdown-report pre {
+        overflow-x: auto;
+        background: #111111;
+        color: #f7f7f4;
+        padding: 1rem;
+        border-radius: 6px;
       }
     </style>
   <script type="importmap">
@@ -96,7 +176,7 @@
 </script>
 <link rel="stylesheet" href="/index.css">
 </head>
-  <body class="bg-background text-primary antialiased selection:bg-accent/30 selection:text-white">
+  <body class="bg-[#f7f7f4] text-[#111111] antialiased selection:bg-[#111111] selection:text-white">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>
