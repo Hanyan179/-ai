@@ -1,742 +1,387 @@
-import { SkillInfo, ScenarioItem, ToolInfo, DemoOutput } from './types';
-
-// ========== Skills Data ==========
-
-export const SKILLS_DATA: SkillInfo[] = [
-  {
-    id: 'dsfa-framework-rules',
-    name: 'dsfa-framework-rules',
-    displayName: 'DSFA 框架编码规则',
-    description: 'DSFA 平台框架编码规则。生成 Java 代码时必须遵循的 DDD 分层、JFinal ORM、BO/DO 转换、Controller/Service/Repository 编码规范。',
-    category: 'dsfa',
-    sourcePath: 'skills/dsfa-framework-rules/SKILL.md',
-    references: ['references/orm-patterns.md'],
-    content: `# DSFA 平台框架规则
-
-基于 \`dsfa-platform-parent:6.3.0\`，所有业务模块必须遵循以下规则。
-
-## DDD 分层结构
-
-\`\`\`
-dsfa-xxx-starter/              # 父 POM（packaging: pom）
-├── dsfa-xxx-api/              # 对外 Feign/Dubbo 接口 + POJO
-├── dsfa-xxx-adapter/          # Controller + DTO + MetaExt 扩展
-├── dsfa-xxx-application/      # 应用层编排（可选，复杂业务场景使用）
-├── dsfa-xxx-domain/           # 领域层：BO + Service接口/实现 + Repository接口 + Constants + Utils + Enums
-├── dsfa-xxx-infrastructure/   # 基础设施层：Repository实现 + DO + SQL模板
-└── dsfa-xxx-bootstrap/        # 启动模块：Application类 + bootstrap.yml
-\`\`\`
-
-依赖方向：\`bootstrap → adapter + infrastructure → domain\`（domain 不依赖 infrastructure）
-
-## ORM：JFinal ActiveRecord（非 MyBatis）
-
-详细的 DO 定义、SQL 模板语法、Repository 实现模式见 references/orm-patterns.md
-
-## BO 模式选择
-
-项目中存在两种 BO 模式，**必须跟随所在模块的现有模式**：
-
-- Policy 模块：\`@Data\` Lombok BO，Repository 中手动 Record → BO 映射
-- KMS 模块：\`ProductBaseModel\` BO，使用 \`ProductModelUtil.convertDO2BO()\` 转换
-
-## Controller 规范
-
-\`\`\`java
-@RestController
-@RequestMapping("/bizName")
-public class XxxController extends BaseController {
-    @Resource
-    IXxxService xxxService;
-
-    @GetMapping("/query")
-    public Result query(@RequestParam String id) {
-        return Result.me().success(xxxService.query(id));
-    }
-
-    @PostMapping("/add")
-    public Result add(@RequestBody XxxDTO dto) {
-        boolean flag = xxxService.add(dto);
-        return flag ? Result.me().success() : Result.me().error();
-    }
-}
-\`\`\`
-
-- 继承 \`BaseController\`（\`com.dsfa.platform.starter.web.base\`）
-- 返回 \`Result.me().success()\` / \`.success(data)\` / \`.error()\` / \`.error("消息")\`
-- 注入用 \`@Resource\`，免登录加 \`@AuthIgnore\`
-
-## Service 规范
-
-\`\`\`java
-// domain/service/bizName/IXxxService.java
-public interface IXxxService { ... }
-
-// domain/service/bizName/impl/XxxServiceImpl.java
-@Service
-public class XxxServiceImpl implements IXxxService {
-    @Resource
-    IXxxRepository xxxRepository;
-}
-\`\`\`
-
-## DTO / VO / BO 分工
-
-| 类型 | 位置 | 用途 |
-|------|------|------|
-| DTO | domain/model/bizName/ | 请求参数（查询条件、分页参数），\`@Data\` |
-| VO | domain/model/bizName/ | 响应/更新参数，\`@Data @Builder\` |
-| BO | domain/model/bizName/ | 业务对象，对应数据库表，\`@Data @Builder @TableBind\` |
-
-## MetaExt 扩展（表单钩子）
-
-adapter 层的 \`ext/\` 目录下，用于拦截平台表单的保存/删除等操作。
-
-## Constants 规范
-
-\`\`\`java
-public class XxxConstants {
-    public static final String TABLE_NAME = "xxx_table_name";
-    public static class Column {
-        public static final String ID = "xxx_table_name_id";  // 主键 = 表名_id
-    }
-}
-\`\`\`
-
-## 平台 SDK 常用类
-
-| 类 | 包 | 用途 |
-|---|---|---|
-| \`Result\` | \`com.dsfa.platform.sdk.common\` | 统一返回 |
-| \`JSONObject/JSONArray\` | \`com.dsfa.platform.sdk.json\` | JSON 操作 |
-| \`BaseController\` | \`com.dsfa.platform.starter.web.base\` | Controller 基类 |
-| \`DsfaBaseModel<T>\` | \`com.dsfa.platform.starter.meta.base\` | DO 基类 |
-| \`UserInfoHolder\` | \`com.dsfa.platform.starter.meta.session\` | 用户上下文 |
-| \`Db/Kv/SqlPara/Record\` | \`com.dsfa.platform.starter.db.jfinal.*\` | 数据库操作 |
-| \`@TableBind\` | \`com.dsfa.platform.starter.db.jfinal.tablebind\` | 表绑定注解 |
-| \`MetaExt/MetaAspect\` | \`com.dsfa.platform.starter.meta.core.ext\` | 表单扩展 |`
-  },
-  {
-    id: 'creating-entity',
-    name: 'creating-entity',
-    displayName: '实体创建工作流',
-    description: '为数据库表创建完整的 DDD 分层 Java 代码（Constants → DO → BO → SQL模板 → Repository → Service → Controller）。',
-    category: 'dsfa',
-    sourcePath: 'skills/creating-entity/SKILL.md',
-    content: `# 创建实体类
-
-为一张数据库表生成完整的 DDD 分层代码。执行前务必加载 \`dsfa-framework-rules\`。
-
-## 工作流
-
-\`\`\`
-查表结构 → 看同模块代码 → Constants → DO → BO → SQL模板 → Repository接口+实现 → Service接口+实现 → Controller
-\`\`\`
-
-## 第一步：查数据库表结构
-
-\`\`\`sql
-SELECT COLUMN_NAME, DATA_TYPE, COLUMN_COMMENT
-FROM information_schema.COLUMNS
-WHERE TABLE_NAME = '表名' ORDER BY ORDINAL_POSITION;
-\`\`\`
-
-## 第二步：查看同模块已有代码
-
-确认当前模块使用的 BO 模式（Policy 用 @Data，KMS 用 ProductBaseModel），确认包路径和命名规范。
-
-## 第三步：按顺序创建文件
-
-1. **Constants**（domain 层）— 表名、主键、字段常量
-2. **DO**（infrastructure 层）— 继承 DsfaBaseModel，@TableBind 绑定
-3. **BO**（domain 层）— 跟随模块现有模式
-4. **SQL 模板**（infrastructure 层）— namespace 与 SQL_KEY 对应
-5. **Repository** 接口（domain）+ 实现（infrastructure）
-6. **Service** 接口 + 实现（domain 层）
-7. **Controller**（adapter 层）
-
-## 完成检查
-
-- Constants 表名、主键、所有字段常量已定义
-- DO 的 @TableBind 正确，DAO 静态实例存在
-- BO 跟随模块现有模式
-- SQL 模板 namespace 与 SQL_KEY 对应，查询包含 ds_deleted = '0'
-- Repository 接口在 domain，实现在 infrastructure
-- 包路径与同模块已有代码一致`
-  },
-  {
-    id: 'project-overview',
-    name: 'project-overview',
-    displayName: '项目架构总览',
-    description: '中小企业服务平台项目架构、技术栈、服务清单、依赖关系、Skills 导航索引。AI 在任何任务开始前自动加载。',
-    category: 'dsfa',
-    sourcePath: 'skills/project-overview/SKILL.md',
-    content: `# 中小企业服务平台
-
-## 核心原则
-
-**绝对不要修改已有源码。** 只改配置或新增代码。
-
-## 项目架构
-
-\`\`\`
-中小企业代码/
-├── 后端代码/
-│   ├── dsfa-infra-starter/        # 基础组件库（所有服务依赖）
-│   ├── dsfa-gateway/              # API 网关（Spring Cloud Gateway）
-│   ├── dsfa-platform-starter/     # 平台核心（用户/权限/基础服务）
-│   ├── dsfa-kms-starter/          # 知识管理（DDD 多模块）
-│   └── dsfa-policy-starter/       # 政策服务（DDD 多模块）— 主要业务开发
-├── 中小企业-前端/                  # 已构建静态文件
-└── nacos/nacos-dev/               # 本地 Nacos（内嵌 Derby）
-\`\`\`
-
-## 技术栈
-
-- JDK 8（必须）、Spring Boot 2.x + Spring Cloud Alibaba
-- Nacos（配置中心 + 服务发现）、Dubbo（服务间 RPC）
-- JFinal ActiveRecord（ORM，非 MyBatis）
-- MySQL / KingBase8 / 达梦（多数据库兼容）
-- Redis、Elasticsearch、RocketMQ
-
-## 服务清单
-
-| 服务 | 端口 | JAR 路径 |
-|------|------|----------|
-| Nacos | 8848 | nacos-dev/bin/startup.sh |
-| Platform | 20001 | target/dsfa-platform-starter.jar |
-| Gateway | 20002 | target/dsfa-gateway-starter.jar |
-| KMS | 19012 | dsfa-kms-bootstrap/target/dsfa-kms-starter.jar |
-| Policy | 19021 | dsfa-policy-bootstrap/target/dsfa-policy-starter.jar |
-
-## 启动顺序
-
-\`\`\`
-Nacos → Platform → Gateway → KMS + Policy（可并行）
-\`\`\`
-
-## Skills 导航
-
-| Skill | 用途 | 何时使用 |
-|-------|------|----------|
-| dsfa-framework-rules | 框架编码规则 | 编写任何业务代码时 |
-| creating-entity | 实体创建工作流 | 为数据库表创建 Java 实体全套代码 |
-| requirement-analysis | 需求分析 | 用户提出新功能需求 |
-| feature-workflow | 开发工作流 | 需求确认后，Git 分支 → 开发 → 提交 → MR |
-| project-startup | 启动指南 | 搭建本地开发环境 |
-| code-review | 代码审查 | 检查代码是否符合项目规范 |
-| writing-skills | Skills 编写 | 创建或优化 skill 文件 |`
-  },
-  {
-    id: 'project-startup',
-    name: 'project-startup',
-    displayName: '项目启动指南',
-    description: '中小企业服务平台本地环境搭建与启动。包含前置环境、Nacos 配置、Maven 构建、服务启动顺序。',
-    category: 'dsfa',
-    sourcePath: 'skills/project-startup/SKILL.md',
-    references: ['references/startup-steps.md'],
-    content: `# 启动指南
-
-本文档是 AI 执行本地环境搭建的操作手册。按顺序执行即可。
-
-**绝对不要修改源码。** 只改配置。
-
-## 工作流
-
-\`\`\`
-前置环境 → Maven 配置 → Nacos 启动与配置 → 前端部署 → 构建 → 启动服务 → 验证
-\`\`\`
-
-## 快速参考
-
-| 步骤 | 关键命令/操作 |
-|------|--------------|
-| JDK 8 | \`brew install --cask zulu8\`，确认 java -version 输出 1.8.x |
-| Maven | \`brew install maven\`，复制 dsfa.xml 到 ~/.m2/settings.xml |
-| Redis | \`brew install redis && brew services start redis\` |
-| Nacos | \`sh nacos-dev/bin/startup.sh -m standalone\` |
-| 构建 | \`mvn clean package -DskipTests -f {pom路径}\` |
-| 启动 | Nacos → Platform → Gateway → KMS + Policy |
-
-## 常见问题
-
-| 问题 | 原因 | 解决 |
-|------|------|------|
-| BindException: Can't assign requested address | Nacos 中 dubbo.protocol.host 是公司内网 IP | 改成 127.0.0.1 |
-| KMS 编译失败 WritingSupport 找不到方法 | infra API 版本不匹配 | 找同事拿匹配的 infra 源码 |
-| Policy 编译失败找不到 parent POM | 私服缺少 POM | mvn install:install-file 安装本地 POM |
-| 启动超时 | 数据库连不上/Redis 密码不对 | 检查 VPN、Redis 密码 |`
-  },
-  {
-    id: 'requirement-analysis',
-    name: 'requirement-analysis',
-    displayName: '需求分析',
-    description: '用户需求分析与需求文档编写。创建需求定义文档，明确边界、任务拆解、Git 分支规划。在写代码之前必须完成。',
-    category: 'dsfa',
-    sourcePath: 'skills/requirement-analysis/SKILL.md',
-    content: `# 需求分析
-
-用户提需求时，第一件事是创建需求文档，不是写代码。
-
-## 工作流
-
-\`\`\`
-用户提需求 → 理解需求 → 调研现有代码 → 创建需求文档 → 用户确认 → 进入开发
-\`\`\`
-
-## 第一步：理解需求
-
-向用户确认：功能描述、所属模块（policy/kms/platform）、新增还是修改、有无参考功能、是否涉及前端。
-
-## 第二步：调研现有代码
-
-- 涉及已有表 → 查看 Constants/DO/BO/Repository
-- 有参考功能 → 读取 Controller → Service → Repository 全链路
-- 涉及新表 → 查数据库表结构
-- 确认包路径、命名规范、编码模式
-
-## 第三步：创建需求文档
-
-位置：\`docs/requirements/{日期}-{功能简述}.md\`
-
-模板结构：
-
-\`\`\`markdown
-# {功能名称}
-
-> 创建时间：{YYYY-MM-DD} | 所属模块：dsfa-{module}-starter | 状态：待确认
-
-## 一、需求描述
-## 二、功能边界（做什么 / 不做什么）
-## 三、数据设计（新建表 / 涉及已有表）
-## 四、接口设计（方法、路径、参数、返回）
-## 五、开发任务（文件清单 + 开发顺序）
-## 六、Git 规划
-## 七、注意事项
-\`\`\`
-
-## 原则
-
-1. **文档先行** — 没有需求文档不写代码
-2. **边界清晰** — "做什么"和"不做什么"同样重要
-3. **不假设** — 不确定就问用户
-4. **不过度设计** — 只做用户要求的`
-  },
-  {
-    id: 'feature-workflow',
-    name: 'feature-workflow',
-    displayName: '功能开发工作流',
-    description: '从 Git 分支创建到代码开发、自检、提交、推送、创建 MR 的全流程。',
-    category: 'dsfa',
-    sourcePath: 'skills/feature-workflow/SKILL.md',
-    references: ['references/mr-template.md'],
-    content: `# 功能开发工作流
-
-前置条件：需求文档已创建并经用户确认。
-
-## 工作流
-
-\`\`\`
-创建 Git 分支 → 按需求文档开发 → 自检 → 提交 → 推送 → 创建 MR → 更新文档 → 通知用户
-\`\`\`
-
-## 第一步：创建 Git 分支
-
-\`\`\`bash
-git -C {服务目录} checkout dev && git -C {服务目录} pull origin dev
-git -C {服务目录} checkout -b feature/{功能简述}_{YYYYMMDD}
-\`\`\`
-
-## 第二步：开发
-
-按需求文档"开发任务"中的顺序：Constants → DO → BO → SQL模板 → Repository → Service → Controller
-
-- 遵循 dsfa-framework-rules 编码规范
-- 新建实体参考 creating-entity
-- 每完成一个文件确认编译无错误
-- 不修改已有源码
-
-## 第三步：自检
-
-- 需求文档每一项都已完成
-- 包路径正确，Constants 与数据库一致
-- SQL namespace 与 SQL_KEY 对应
-- 所有查询包含 ds_deleted = '0'
-- Controller 路径与接口设计一致
-- \`mvn compile -DskipTests\` 通过
-
-## 第四步：提交推送
-
-\`\`\`bash
-git -C {服务目录} add .
-git -C {服务目录} commit -m "{类型}：{描述}"
-git -C {服务目录} push origin feature/{功能简述}_{日期}
-\`\`\`
-
-## 第五步：创建 Merge Request
-
-推送完成后，通过 GitLab API 创建 MR。
-
-## 异常处理
-
-- 需求理解有误 → 停下来，更新文档标注疑问
-- 编译失败 → 检查 infra 是否 install、包路径和 import
-- 需求变更 → 先更新需求文档，用户确认后继续`
-  },
-  {
-    id: 'code-review',
-    name: 'code-review',
-    displayName: '代码审查规则',
-    description: '检查新增或修改的 Java 代码是否符合项目编码规范、DDD 分层约束、JFinal ORM 使用规范、安全要求。',
-    category: 'dsfa',
-    sourcePath: 'skills/code-review/SKILL.md',
-    content: `# 代码审查规则
-
-## 审查清单
-
-### 分层约束
-- domain 层不依赖 infrastructure 层
-- Controller 只调用 Service，不直接调用 Repository
-- Repository 接口在 domain，实现在 infrastructure
-- DO 在 infrastructure，BO/DTO/VO 在 domain
-
-### ORM 使用
-- SQL 使用 \`#para()\` 参数化，无字符串拼接（防注入）
-- 所有查询包含 \`ds_deleted = '0'\` 软删除条件
-- SQL 兼容 MySQL/KingBase8/达梦，无 MySQL 特有语法
-- SQL_KEY 与 SQL 模板的 \`#namespace\` 一致
-- 模糊查询用 \`concat(concat('%', #para(xxx)), '%')\`
-
-### 编码规范
-- 注入用 \`@Resource\`（非 \`@Autowired\`）
-- Controller 返回 \`Result.me().success()\` / \`.error()\`
-- Controller 继承 \`BaseController\`
-- 列名使用 Constants 常量，不硬编码字符串
-- BO 模式与所在模块一致
-
-### 安全
-- 需要登录的接口没有加 \`@AuthIgnore\`
-- 公开接口明确加了 \`@AuthIgnore\`
-- 敏感操作有权限校验
-- 用户输入已做校验（长度、格式、范围）
-- 文件上传有类型和大小限制
-- 日志中不输出敏感信息
-- 批量操作有数量上限，防止资源耗尽
-- 导出接口有分页或数量限制
-
-### 命名
-- 主键命名：\`表名_id\`
-- 平台字段前缀 \`ds_\`，业务字段前缀 \`p_\`，分类字段前缀 \`cm_\`
-- 包路径与同模块已有代码一致`
-  },
-  {
-    id: 'writing-skills',
-    name: 'writing-skills',
-    displayName: 'Skills 编写指南',
-    description: '基于 Agent Skills 规范，创建新的 skill、优化现有 skill 的编写指南。',
-    category: 'general',
-    sourcePath: 'skills/writing-skills/SKILL.md',
-    content: `# Skills 编写指南
-
-基于 [Agent Skills 规范](https://agentskills.io/specification)，适配本项目。
-
-## 目录结构
-
-每个 skill 是一个独立文件夹，包含 SKILL.md 主文件：
-
-\`\`\`
-.kiro/skills/
-├── skill-name/
-│   ├── SKILL.md              # 必须，主文件
-│   ├── references/            # 可选，详细参考文档
-│   │   └── REFERENCE.md
-│   ├── scripts/               # 可选，可执行脚本
-│   └── assets/                # 可选，静态资源
-\`\`\`
-
-## SKILL.md 格式
-
-\`\`\`yaml
----
-name: skill-name          # 必须，kebab-case，与文件夹名一致
-description: 描述功能和使用时机  # 必须，最多 1024 字符
-license: Apache-2.0       # 可选
-compatibility: 环境要求    # 可选
-metadata:                  # 可选
-  author: example-org
-  version: "1.0"
----
-
-Markdown 正文（skill 指令内容）
-\`\`\`
-
-## 渐进式披露
-
-| 层级 | 加载时机 | Token 预算 |
-|------|----------|-----------|
-| name + description | 启动时加载所有 skill | ~100 tokens |
-| SKILL.md 正文 | skill 被激活时 | < 5000 tokens |
-| references/ 文件 | 按需加载 | 不限 |
-
-- 主文件控制在 500 行以内
-- 详细内容放 references/ 子目录
-- 文件引用只做一级深度，不嵌套
-
-## 编写原则
-
-1. **只写 AI 不知道的信息**，不解释常识
-2. **脆弱操作给精确指令**，灵活任务给方向性指导
-3. **工作流型 skill** 提供清晰步骤 + checklist
-4. 包含验证/反馈循环（做完 → 检查 → 修复）
-
-## 迭代方法
-
-1. 先不用 skill 完成一次任务，记录反复提供的上下文
-2. 把这些上下文提取为 skill
-3. 用 skill 再做一次类似任务，观察效果
-4. 根据实际使用调整内容`
-  },
-  {
-    id: 'p2340-database-query',
-    name: 'p2340-database-query',
-    displayName: 'P2340 模块数据探查',
-    description: '通过查询数据库获取模块的完整开发要素（表单、列表、元数据字段等），生成模块信息文档。',
-    category: 'p2340',
-    sourcePath: 'p2340-database-query/skill.md',
-    references: ['reference/module-info-queries.md', 'reference/module-doc-template.md', 'reference/conventions.md', 'reference/query-patterns.md', 'reference/modules.md'],
-    content: `# P2340 模块数据探查
-
-核心价值：将用户的文字需求（如"是否有效"）映射到开发所需的元数据编号（如 \`C-OFFICESUPPLIES-CATEGORY-0003\`）、表单ID、列表ID 等。
-
-## 数据库连接
-
-- MCP Server: \`p2340-database\`
-- 工具: \`mcp_p2340_database_query\`（参数: sql）
-- 数据库: KingbaseES（兼容 PostgreSQL）
-- Schema: \`dreamit_dj\`
-- 模式: 只读查询
-
-## 核心工作流程
-
-### 第一步：获取模块基本信息
-
-用户提供 module_id 后，查询 SQL 模板，依次获取：
-
-1. **模块基本信息**（G_MODULE）→ 模块名称、编号、类型
-2. **模块表单列表**（G_FORM）→ 表单ID、名称、类型
-3. **模块列表清单**（G_LIST）→ 列表ID、名称、类型
-4. **模块元数据字段**（G_MODULE_METADATA）→ META_ID、字段名、业务表名
-
-### 第二步：生成模块信息文档
-
-将查询结果整理为结构化的模块信息文档，包含所有开发所需的 ID 和映射关系。
-
-### 第三步：需求映射
-
-根据用户的文字需求，在元数据中定位对应的 META_ID，为 JS 开发、表单操作等提供准确的编号。
-
-## 包含参考文档
-
-- 7 个 SQL 查询模板
-- 数据库约定与注意事项
-- 输出文档标准模板
-- 通用查询模板
-- 已知模块清单`
-  },
-  {
-    id: 'p2340-form-dev',
-    name: 'p2340-form-dev',
-    displayName: 'P2340 表单功能开发',
-    description: '覆盖表单页面的完整开发流程：从获取模块信息、定位/创建文件，到编写前端 JS 和后端 Java 代码。',
-    category: 'p2340',
-    sourcePath: 'p2340-form-dev/skill.md',
-    references: ['reference/form-events.md', 'reference/code-templates.md', 'reference/backend-rules.md', 'reference/file-path-rules.md', 'reference/module-info-flow.md'],
-    content: `# P2340 表单功能开发
-
-## 完整开发流程
-
-### 第一步：收集信息
-
-用户需求通常是笼统的文字描述。需要确认：
-
-1. **目标表单/列表**：需要 form_id、list_id 或 module_id（至少一个）
-2. **操作类型**：自定义按钮？表单初始化？字段联动？列表按钮？
-3. **业务逻辑**：点击后做什么？更新哪张表？哪些字段？
-
-### 第二步：获取模块信息
-
-使用 \`p2340-database-query\` skill 查询模块完整信息。
-
-输出：模块名称、所有表单ID、所有列表ID、元数据字段（META_ID ↔ 字段名映射）、业务数据表名。
-
-### 第三步：定位/创建文件
-
-检查清单：
-- 前端 JS: \`src/main/webapp/p2340/{moduleId}/js/{formId或listId}.js\`
-- 后端 Controller: \`module_{moduleId}/controller/\`
-- 后端 Service 接口 + 实现: \`module_{moduleId}/service/\`
-- Entity（如需要）: \`module_{moduleId}/entity/\`
-
-### 第四步：编写代码
-
-包含 **9 种代码模板**：
-
-1. 保存表单 + 调用后端接口
-2. 确认弹窗 + 保存 + 调接口
-3. 不保存直接调接口
-4. 打开另一个列表弹窗
-5. formReady：URL 参数填充字段
-6. formReady：Ajax 获取数据填充
-7. formReady：遍历子表单行设值
-8. 列表按钮：根据状态打开不同表单节点
-9. 列表按钮：后端动态决定表单节点
-
-## 参考文档
-
-- form-events.md — 表单固定事件名规范
-- code-templates.md — 前端代码模板
-- backend-rules.md — 后端开发规则
-- file-path-rules.md — 文件路径命名规则
-- module-info-flow.md — 模块信息获取流程`
-  }
+import { Term, Scenario, EssentialStep, TraeTip } from './types';
+
+// ========== 术语卡片 ==========
+
+export const TERMS: Term[] = [
+  { id: 'api-key', word: 'API Key', oneLiner: '调用 AI 服务的"会员卡"', detail: '有了它才能用 AI 服务，每次调用都扣费。丢了别人能用你的钱，所以不能写在代码里。' },
+  { id: 'model', word: 'AI 模型', oneLiner: '不同的 AI "大脑"', detail: '就像不同的厨师——有的快但一般，有的慢但好。Claude、GPT、GLM、豆包都是不同模型。模型是根据训练数据回答的，不能上网，不知道实时信息。' },
+  { id: 'frontend', word: '前端', oneLiner: '用户看到的界面', detail: '页面、按钮、颜色、布局。就像一个人的长相和穿着——别人第一眼看到的就是这个。' },
+  { id: 'backend', word: '后端', oneLiner: '用户看不到的处理逻辑', detail: '点了按钮之后背后发生什么？谁调 AI？谁处理文件？就像一个人的大脑——外表看不到，但决策都在这里。' },
+  { id: 'api', word: 'API（接口）', oneLiner: '程序之间的"传话人"', detail: '你（前端）想要 AI 的内容，跟服务员（API）说，服务员去厨房（后端）下单，做好了端给你。' },
+  { id: 'curl', word: 'curl', oneLiner: '用命令行发请求的工具', detail: '就像用电话打给 AI 服务——告诉它你要什么，它把结果告诉你。' },
+  { id: 'streaming', word: '流式输出', oneLiner: '内容一个字一个字蹦出来', detail: '普通方式是 AI 写完再发（像等外卖），流式是每写一个词就发（像看直播）。' },
+  { id: 'system-prompt', word: '系统提示词', oneLiner: '给 AI 的"岗位说明书"', detail: '告诉 AI 它是什么角色、该怎么做事。不给的话 AI 干活全凭心情，给了就知道该用什么风格。' },
+  { id: 'parse', word: '文件解析', oneLiner: '把文件里的文字"抠"出来', detail: 'PDF、Word、PPT 不是纯文字，有自己的格式。AI 只能读纯文字，所以需要工具把文字提取出来。' },
+  { id: 'ocr', word: 'OCR', oneLiner: '让电脑"看"图片里的文字', detail: '有些 PDF 是扫描件（拍照生成的），文字其实是图片。OCR 让电脑像人一样识别图片里的文字。' },
+  { id: 'multimodal', word: '多模态', oneLiner: 'AI 不光能读文字，还能看图片', detail: '传统 AI 只能处理文字。多模态 AI 能同时理解文字和图片，比如你给它一张设计图它能看懂。' },
+  { id: 'server', word: '云服务器', oneLiner: '租的一台 24 小时在线的电脑', detail: '你的应用只能在自己电脑上跑。要让别人用，就得放到一台 24 小时开机的电脑上。就像租了一间办公室。' },
+  { id: 'nginx', word: 'Nginx', oneLiner: '服务器上的"前台接待"', detail: '用户访问网址，Nginx 接待，把请求转给你的应用。就像公司前台带客户去找对应的人。' },
+  { id: 'pm2', word: 'PM2', oneLiner: '让应用 24 小时运行的"管家"', detail: '你关了终端应用就停了。PM2 让它在后台一直跑，崩了自动重启。' },
+  { id: 'env', word: '配置文件 (.env)', oneLiner: '专门放密码和密钥的文件', detail: '把 API Key 放这里，不写在代码中。这个文件只在你自己电脑上，不会分享出去。' },
+  { id: 'dependency', word: '依赖', oneLiner: '别人写好的工具，拿来用', detail: '就像做菜需要锅碗瓢盆，不用自己造。"装依赖"就是"买工具"。' },
+  { id: 'domain', word: '域名', oneLiner: '网址，IP 地址的"别名"', detail: '你记不住 220.181.38.148，但记得住 baidu.com。域名就是方便人记忆的网址。' },
+  { id: 'https', word: 'HTTPS', oneLiner: '加密传输，防止被偷看', detail: 'HTTP 像寄明信片谁都能看，HTTPS 像寄密封信。浏览器对没 HTTPS 的网站会显示"不安全"。' },
+  { id: 'markdown', word: 'Markdown (.md)', oneLiner: 'AI 最擅长的文字格式', detail: '用 # 表示标题、- 表示列表。就像 Word 的简化版，AI 特别擅长读写。' },
+  { id: 'dns', word: 'DNS 解析', oneLiner: '把域名翻译成 IP 地址', detail: '你输入 baidu.com，DNS 帮你翻译成 220.181.38.148。就像电话簿把名字翻译成号码。' },
+  { id: 'ssl', word: 'SSL 证书', oneLiner: '网站的"身份证"', detail: '有了它浏览器才会显示小锁头，表示网站安全。Let\'s Encrypt 可以免费申请。' },
+  { id: 'icp', word: 'ICP 备案', oneLiner: '国内网站的"营业执照"', detail: '在国内用域名必须备案，不然会被封。在阿里云/腾讯云控制台里按步骤走就行。' },
+  { id: 'rate-limit', word: '请求限制', oneLiner: '防止有人恶意刷接口', detail: '如果有人写程序疯狂调你的 AI 接口，费用会暴涨。请求限制就是限制每个人每分钟最多调几次。' },
+  { id: 'token', word: 'Token', oneLiner: 'AI 计费的单位', detail: 'AI 按"用了多少文字"收费，单位就是 token。大概 1000 个汉字 ≈ 1500-2000 tokens。' },
+  { id: 'context-window', word: '上下文窗口', oneLiner: 'AI 一次能"看到"的文字量', detail: 'AI 能看的文字量有上限。文件太大塞不进去，需要截断。就像一个人的短期记忆有限。' },
+  { id: 'aliyun', word: '阿里云', oneLiner: '国内最大的云服务平台', detail: '买服务器、买域名、做备案都可以在这里。类似的还有腾讯云、华为云。' },
+  { id: 'ssh', word: 'SSH', oneLiner: '远程登录服务器', detail: '在你电脑上打字，命令在服务器上执行。就像远程控制另一台电脑，只不过没有图形界面。' },
+  { id: 'database', word: '数据库', oneLiner: '应用的"记忆"', detail: '用户的账号密码、生成的历史记录、上传的文件信息——都存在数据库里。关了电脑再打开，数据还在。就像一个人的长期记忆。' },
 ];
 
-// ========== Scenario Data ==========
+// ========== AI Coding 必要操作 ==========
 
-export const SCENARIOS: ScenarioItem[] = [
-  { name: '列表按钮打开表单', frequency: '高', patternFixed: true, aiCapable: true, status: 'done', statusLabel: '✅ 已定义模板' },
-  { name: '表单自定义按钮（保存+调接口）', frequency: '高', patternFixed: true, aiCapable: true, status: 'done', statusLabel: '✅ 已定义模板' },
-  { name: '列表数据过滤 / Excel 导出', frequency: '高', patternFixed: true, aiCapable: true, status: 'done', statusLabel: '✅ 已定义模板' },
-  { name: '表单初始化填充字段', frequency: '中', patternFixed: true, aiCapable: true, status: 'done', statusLabel: '✅ 已定义模板' },
-  { name: '多表关联查询 / 复杂 SQL', frequency: '中', patternFixed: true, aiCapable: true, status: 'next', statusLabel: '🔜 可扩展' },
-  { name: 'Excel 导入', frequency: '中', patternFixed: true, aiCapable: true, status: 'next', statusLabel: '🔜 下一步' },
-  { name: '数据源接口开发', frequency: '中', patternFixed: true, aiCapable: true, status: 'next', statusLabel: '🔜 下一步' },
-  { name: '工作流节点开发', frequency: '低', patternFixed: false, aiCapable: false, status: 'no', statusLabel: '❌ 暂不覆盖' },
-  { name: '跨模块复杂业务', frequency: '低', patternFixed: false, aiCapable: false, status: 'no', statusLabel: '❌ 暂不覆盖' },
-];
-
-// ========== Tool Comparison ==========
-
-export const TOOLS: ToolInfo[] = [
+export const ESSENTIAL_STEPS: EssentialStep[] = [
   {
-    name: 'Trae',
-    vendor: '字节跳动',
-    free: '完全免费',
-    paid: '暂未公布',
-    note: '国内直接下载使用，零门槛，适合所有人自行实验和日常使用',
-    tier: 1,
-    requirement: '无，直接下载即可使用',
-    aiModel: 'GLM / 豆包',
+    id: 'e-1',
+    title: '每次开工：让 AI 先读项目文档',
+    description: 'AI 每次对话都是从零开始的，它不记得上次聊了什么。让它先读一遍项目文档，就能接上之前的进度。',
+    prompt: '请先看一下 项目文档.md，了解当前项目的情况。\n告诉我：现在做到哪了，接下来该做什么。',
+    why: '就像你有一个助理，每次开会前让他看一遍上次的会议纪要。AI 读完文档就知道所有情况，不用你重新解释。',
+    termIds: ['markdown'],
   },
   {
-    name: 'Antigravity',
-    vendor: 'Google',
-    free: '$300 免费额度',
-    paid: '按量计费',
-    note: '谷歌出品 AI IDE，可使用国外顶级 AI 模型，需谷歌账号及 $300 免费算力额度',
-    tier: 2,
-    requirement: '谷歌账号 + $300 免费算力额度（自动获得）',
-    aiModel: 'Gemini 系列',
+    id: 'e-2',
+    title: '每次收工：让 AI 更新项目文档',
+    description: '做完事情不记录，下次又要从头理清。每次收工让 AI 把今天做的事情写进文档。',
+    prompt: '帮我更新 项目文档.md：\n1. 在"开发记录"里加上今天的记录，写清楚做了什么、改了哪些文件\n2. 更新"功能清单"和"待办事项"',
+    why: '每次做完都更新文档，就像每次开完会写会议纪要。多花一分钟，下次省半小时。这个文档会越来越有价值——它记录了整个项目的演变过程。',
   },
   {
-    name: 'Kiro',
-    vendor: 'AWS (亚马逊)',
-    free: '有免费额度',
-    paid: '~$19/月',
-    note: '亚马逊出品，可用世界最顶级模型（Claude），需 AWS 账号（一年以内注册），由我统一办理',
-    tier: 3,
-    requirement: 'AWS 账号（需一年以内注册），由我统一办理，其他人不用操心',
-    aiModel: 'Claude Sonnet / Opus',
+    id: 'e-3',
+    title: '第一次：让 AI 创建项目文档',
+    description: '项目文档是你和 AI 之间的"共享记忆"。用固定结构，内容多了也不乱。',
+    prompt: '帮我在项目根目录创建一个 项目文档.md，按以下结构填写：\n\n# 项目文档\n## 一、项目概述\n## 二、技术栈\n## 三、文件结构\n## 四、配置信息\n## 五、功能清单\n## 六、数据流转\n## 七、开发记录\n## 八、待办事项\n\n根据你对当前项目的了解来填。',
+    why: '固定结构是为了内容多了也不乱——就像一本书有目录，找什么翻目录就行。',
+    termIds: ['markdown'],
+  },
+  {
+    id: 'e-4',
+    title: 'API Key 不要写在代码里',
+    description: 'API Key 是调用 AI 服务的"会员卡"。写在代码里，别人看到代码就能拿走用你的钱。',
+    prompt: '帮我检查一下，API Key 是不是直接写在代码里了。\n如果是，帮我改成从配置文件读取。',
+    why: '代码以后可能会分享给别人。把 API Key 放在配置文件里，就像把银行卡和密码分开放。',
+    termIds: ['api-key', 'env'],
   },
 ];
 
-// ========== Demo Output ==========
+// ========== 可能遇到的问题 ==========
 
-export const DEMO_DSFA = {
-  name: 'DSFA 中小企业项目启动',
-  desc: '让 AI 理解并启动一个完全陌生的 DSFA 项目，验证 Skill 文档能否承载项目启动所需的知识。',
-  result: '删除所有 AI 生成内容后，AI 基于 Skill 文档在一定时间内重新把项目跑起来。',
-  skillsUsed: ['project-overview', 'project-startup', 'dsfa-framework-rules'],
+export const SCENARIOS: Scenario[] = [
+
+  // ===== 前端相关 =====
+  {
+    id: 'f-1', category: 'frontend',
+    title: '想改页面上某个地方的样式',
+    situation: '觉得某个按钮颜色不好看，或者间距太大，想调整。但不知道代码在哪。',
+    prompt: '（先用 Trae "选择元素"选中你想改的地方）\n\n我选中的这个按钮，帮我把颜色改成蓝色，圆角再大一点。',
+    why: '不需要知道代码在哪个文件。Trae 的"选择元素"功能让你直接在页面上指给 AI 看——就像跟装修师傅说"这面墙刷成白色"，不需要知道墙是什么材质。',
+    imageNote: '用 Trae 右上角"选择元素"按钮 → 在页面上点选 → 在聊天框说你想改什么',
+    termIds: ['frontend'],
+  },
+  {
+    id: 'f-2', category: 'frontend',
+    title: '想让 AI 参考一张图来改页面',
+    situation: '有一张设计图或截图，想让页面长成那个样子。',
+    prompt: '（把图片拖进 Trae 聊天框）\n\n参考这张图，帮我把页面改成这个样子。功能不变，只改外观。',
+    why: '一张图胜过千言万语。Trae 支持拖入图片，AI 能看懂图片内容。',
+    termIds: ['multimodal'],
+    imageNote: '直接把图片文件拖到 Trae 聊天框里即可',
+  },
+  {
+    id: 'f-3', category: 'frontend',
+    title: '点了生成要等好久，以为卡了',
+    situation: '点了"生成"，页面没反应，要等好几秒内容才一次性出来。',
+    prompt: '帮我把 AI 调用改成流式输出：\n1. AI 每生成一点就立刻返回\n2. 前端收到一点就显示一点\n3. 生成中显示"生成中..."，完了显示"完毕"',
+    why: '现在是 AI 写完整篇文章才返回——就像点外卖要等做好了才送来。流式输出是每写一个词就立刻发——就像看直播。用户马上能看到内容在生成，不会以为卡了。',
+    termIds: ['streaming'],
+  },
+  {
+    id: 'f-4', category: 'frontend',
+    title: '出错了但页面什么提示都没有',
+    situation: '有时候点了生成没反应，不知道是网断了还是 API Key 过期了。',
+    prompt: '帮我完善错误提示：\n1. API Key 不对 → 提示"AI 服务配置有误"\n2. 没网 → 提示"网络连接失败"\n3. 文件解析失败 → 提示"换个文件试试"\n\n统一样式，弹出来几秒后消失。',
+    why: '没有错误提示的应用就像一个不会说话的人——出了问题只会愣着。好的提示让用户知道"发生了什么"和"该怎么办"。',
+  },
+
+  // ===== 后端 / AI 相关 =====
+  {
+    id: 'b-1', category: 'backend',
+    title: '上传了文件，但 AI 好像根本没看',
+    situation: '前端有上传区域，传了一个 PDF，但 AI 生成的内容跟文件没有任何关系。',
+    prompt: '前端已经有文件上传的界面了。\n帮我做后端部分：\n1. 接收上传的文件\n2. 把里面的文字提取出来\n3. 把文字拼到发给 AI 的消息里\n\n需要装什么工具也告诉我。',
+    why: '现在是全前端的，前端只负责"让用户看到和操作"。文件拖进去了，但内容还没有真正传给 AI——就像你把资料交给了前台，但前台还没转交给办事的人。需要后端来接收文件、提取文字、发给 AI。',
+    termIds: ['frontend', 'backend', 'parse', 'dependency'],
+  },
+  {
+    id: 'b-2', category: 'backend',
+    title: '上传了 PPT 或扫描件，提取不出文字',
+    situation: '上传了一个 PPT 或者扫描版的 PDF，系统提取不出里面的文字。',
+    prompt: '现在文件解析只支持普通 PDF 和 Word。\n帮我加上 PPT 的解析支持。\n另外有些 PDF 是扫描件，帮我加上 OCR 识别。\n\n告诉我需要装什么工具。',
+    why: '不同格式的文件需要不同的工具来处理。PPT 格式特殊，扫描件里的"文字"其实是图片——需要 OCR 技术让电脑"看"图片识别文字。就像翻译不同语言需要不同的翻译官。',
+    termIds: ['parse', 'ocr'],
+  },
+  {
+    id: 'b-3', category: 'ai',
+    title: 'AI 生成的内容太随意，质量不稳定',
+    situation: '让 AI 写文章，写出来乱七八糟，没标题没段落，有时候好有时候差。',
+    prompt: '帮我在调用 AI 的地方加上系统提示词：\n- 你是一个专业的内容创作助手\n- 生成的内容要有标题和段落\n- 如果用户给了参考资料，基于资料来写\n\n把提示词放在单独文件里，以后改起来方便。',
+    why: 'AI 生成什么样的内容，取决于你怎么"设定"它。不给设定的 AI 就像没有岗位说明书的新员工——干活全凭心情。系统提示词就是这份"岗位说明书"。放单独文件是因为你会经常调整。',
+    termIds: ['system-prompt', 'model'],
+  },
+  {
+    id: 'b-4', category: 'ai',
+    title: '问 AI 现在几点了，它不知道',
+    situation: '问 AI"上海现在几点"或者"今天天气怎么样"，它回答不了或者给了错误答案。',
+    prompt: '现在 AI 不知道实时信息（当前时间、天气、新闻）。\n帮我给 AI 加上获取当前时间的能力。\n如果可以的话，也加上联网搜索的能力。',
+    why: 'AI 模型就像一本百科全书——内容很丰富，但印刷之后就不会更新了。它不知道"现在几点"，就像你不能问一本书"今天天气怎么样"。要让它知道实时信息，需要给它额外的"工具"。',
+    termIds: ['model', 'api'],
+  },
+  {
+    id: 'b-5', category: 'ai',
+    title: '想让用户能选不同的 AI 模型',
+    situation: '现在只能用一个模型，但不同模型各有优劣。',
+    prompt: '帮我做模型选择功能：\n1. 页面上加下拉框\n2. 模型列表放配置文件里\n3. 后端写统一调用层，以后加新模型只需加配置',
+    why: '不同 AI 公司的接口格式不一样。"统一调用层"就像万能转接头——不管什么品牌的充电器都能用。以后加新模型只需要在配置文件里加一条。',
+    termIds: ['model', 'api', 'token'],
+  },
+  {
+    id: 'b-6', category: 'ai',
+    title: '想加一个小功能，比如让 AI 知道天气',
+    situation: '想让 AI 能回答"今天天气怎么样"这类实时问题。',
+    prompt: '我想让 AI 能回答实时天气信息。\n帮我接入一个免费的天气 API，当用户问天气相关的问题时，先查天气数据，再让 AI 基于数据回答。',
+    why: 'AI 模型本身不能上网，但你可以给它"工具"。就像一个很聪明的人，你给他一部电话，他就能打电话查信息了。同样的思路可以接入任何外部数据。',
+    termIds: ['api', 'model'],
+  },
+
+  // ===== 部署相关 =====
+  {
+    id: 'd-1', category: 'deploy',
+    title: '想让别人也能用，但不知道从哪开始',
+    situation: '现在只能在自己电脑上跑，想让其他人也能通过网址访问。',
+    prompt: '我想把这个应用部署到线上，让别人也能用。\n帮我规划一下需要做哪些事情，按顺序列出来。',
+    why: '部署就是"把你电脑上能跑的东西搬到一台 24 小时在线的电脑上"。这一步会涉及很多新东西——买服务器、配环境、绑域名。不用一次全搞懂，让 AI 帮你列出步骤，一步步来。',
+    termIds: ['server', 'aliyun'],
+  },
+  {
+    id: 'd-2', category: 'deploy',
+    title: '买了服务器，不知道怎么用',
+    situation: '在阿里云买了一台服务器，拿到了 IP 和密码，但不知道接下来怎么操作。',
+    prompt: '我买了一台阿里云服务器，IP 是 [你的IP]。\n帮我从零开始配置：\n1. 怎么连上服务器\n2. 装什么软件\n3. 怎么把代码放上去\n4. 怎么让别人通过网址访问\n\n每一步加上注释说明。',
+    why: '不需要理解每条命令的细节，AI 会帮你生成所有步骤。关键是让 AI 加上注释——这样至少知道每一步在干什么。',
+    termIds: ['ssh', 'nginx', 'pm2'],
+  },
+  {
+    id: 'd-3', category: 'deploy',
+    title: '想绑一个好记的网址',
+    situation: '现在只能通过 IP 地址访问（一串数字），想绑一个好记的域名。',
+    prompt: '我买了一个域名 [你的域名]，服务器 IP 是 [你的IP]。\n帮我配置域名解析，让用户通过域名访问我的应用。\n如果需要备案，也告诉我怎么做。',
+    why: '域名就是 IP 地址的"别名"——你记不住一串数字，但记得住一个名字。国内用域名还需要 ICP 备案。',
+    termIds: ['domain', 'dns', 'icp', 'https', 'ssl'],
+  },
+  {
+    id: 'd-4', category: 'deploy',
+    title: '担心有人恶意刷接口，费用暴涨',
+    situation: '应用上线了，担心有人写程序疯狂调 AI 接口，导致费用失控。',
+    prompt: '帮我加上安全措施：\n1. 限制每个人每分钟最多请求 30 次\n2. 检查用户输入的长度\n3. 配置服务器防火墙',
+    why: 'AI 接口是按调用量收费的。如果不做限制，有人恶意刷接口，一天可能花掉几百块。请求限制就是给接口加一道"门禁"。',
+    termIds: ['rate-limit', 'token'],
+  },
+
+  // ===== 通用 =====
+  {
+    id: 'g-1', category: 'general',
+    title: '打开项目，不知道里面有什么',
+    situation: '用 Trae 打开了项目文件夹，左边一堆文件，看不懂哪个是哪个。',
+    prompt: '帮我看看当前项目的文件结构，每个文件是干什么的。\n重点告诉我：\n1. 前端页面在哪\n2. 调用 AI 的代码在哪\n3. API Key 写在哪里\n4. 怎么启动项目',
+    why: '不需要自己一个个文件去看。直接问 AI，告诉它你关心什么，它帮你整理。就像去陌生的办公楼，直接问前台就行。',
+    termIds: ['frontend', 'backend', 'api-key'],
+  },
+  {
+    id: 'g-2', category: 'general',
+    title: '点了生成按钮，没反应或者报错',
+    situation: '项目启动了，页面打开了，但点"生成"什么都没发生，或者弹了一个看不懂的错误。',
+    prompt: '我点了生成按钮，但是页面没反应。\n[如果有错误信息就粘贴过来，或者截图拖进来]\n帮我查一下原因，然后修好。',
+    why: 'AI 看不到你的屏幕，你就是它的眼睛。把"做了什么操作"和"看到了什么现象"说清楚。错误信息是最重要的线索。',
+    imageNote: '可以用 Trae 右上角的"选择元素"功能，选中报错的地方',
+  },
+  {
+    id: 'g-3', category: 'general',
+    title: '想加新功能，不知道从哪下手',
+    situation: '想给应用加一个新功能，但不知道该怎么开始。',
+    prompt: '我想加一个 [xxx] 功能。\n请先看 项目文档.md，然后告诉我：\n1. 需要改哪些地方\n2. 分几步做\n3. 有什么要注意的',
+    why: '不需要自己规划技术方案。让 AI 先了解项目全貌（通过读文档），然后它会帮你分析需要改什么、怎么分步做。',
+  },
+
+  // ===== 产品开发设计思考 =====
+  {
+    id: 'p-1', category: 'ai',
+    title: '多份文件应该怎么设计——政策文件和参考资料要区分优先级',
+    situation: '产品有"初始资料"和"参考资料"两个上传区域。在设计上，政策文件应该是 AI 的核心依据，参考资料是辅助。但目前发给 AI 的时候没有区分，AI 不知道哪个更重要。',
+    prompt: '现在多份文件的内容是直接拼在一起发给 AI 的，AI 分不清主次。\n帮我改一下拼接逻辑：\n1. "初始资料"区域的文件标记为【核心资料】，告诉 AI 这是必须严格依据的内容\n2. "参考资料"区域的文件标记为【参考材料】，告诉 AI 这是辅助参考\n3. 在系统提示词里说明这两者的区别',
+    why: '这是一个产品设计问题，不是技术问题。用户上传的文件有不同的"角色"——有的是必须严格遵循的政策原文，有的只是风格参考。如果不在发给 AI 的消息里做区分，AI 会把所有内容同等对待。解决思路是在拼接时加标记，在系统提示词里说明规则。这就像给助理一叠资料时说"这份是正式文件必须引用，这份只是参考"。',
+    termIds: ['system-prompt', 'context-window'],
+  },
+  {
+    id: 'p-2', category: 'frontend',
+    title: '想做"选中文字后局部修改/扩写"的功能',
+    situation: 'AI 生成了一篇文章，整体还行，但用户想选中其中某一段进行扩写或修改。这需要在右侧输出区域加一个"选中后弹出操作菜单"的交互。',
+    prompt: '我想在右侧的输出结果区域加一个功能：\n用户鼠标选中一段文字后，弹出一个小菜单，有"扩写"、"缩写"、"改写"三个选项。\n点了之后，只把选中的这段文字和用户选择的操作发给 AI，AI 只修改这一段，其他部分不动。\n\n帮我设计一下这个功能的实现思路。',
+    why: '这是一个很常见的产品需求——"局部编辑"。技术上需要解决几个问题：1. 怎么检测用户选中了哪段文字（浏览器有 Selection API）；2. 怎么在选中位置弹出菜单；3. 怎么只把选中的部分发给 AI 修改，然后替换回原文。这个功能做好了，用户就不需要每次都重新生成整篇文章，迭代效率会高很多。',
+    termIds: ['frontend', 'api'],
+  },
+  {
+    id: 'p-3', category: 'ai',
+    title: '上下文太长，AI 开始"忘记"前面的内容',
+    situation: '上传了好几份文件，加上用户的指令，发给 AI 的内容很长。发现 AI 生成的结果好像只参考了后面的内容，前面的文件内容被"忘了"。',
+    prompt: '现在发给 AI 的内容太长了，AI 好像只看了后面的部分。\n帮我看看：\n1. 当前发给 AI 的总长度是多少 token\n2. 用的模型的上下文窗口是多少\n3. 如果超了，帮我设计一个截断或摘要的策略',
+    why: 'AI 模型有一个"上下文窗口"——就是它一次能"看到"的文字量上限。超过这个上限，前面的内容就会被丢掉。不同模型的上限不同（有的 4K，有的 128K）。解决思路有几种：选上下文窗口更大的模型、对长文件先做摘要再发给 AI、或者只发最相关的部分。这是做 AI 产品必须考虑的核心问题之一。',
+    termIds: ['context-window', 'model', 'token'],
+  },
+  {
+    id: 'p-4', category: 'backend',
+    title: '想保存历史对话记录，下次打开还能看到',
+    situation: '现在每次刷新页面，之前生成的内容就没了。想把历史记录保存下来，下次打开还能看到之前生成过什么。',
+    prompt: '现在生成的内容刷新就没了。\n帮我加上历史记录功能：\n1. 每次生成完，把输入和结果保存下来\n2. 先用浏览器本地存储实现\n3. 页面上加一个历史记录列表\n\n后续如果要支持多设备同步，需要改成什么方案？',
+    why: '保存历史记录有两种方案：浏览器本地存储（简单，但换设备就没了）和数据库存储（需要后端，但多设备都能访问）。建议先用本地存储快速实现，验证功能没问题后再考虑要不要上数据库。数据库就像应用的"长期记忆"——浏览器本地存储是"便签纸"，数据库是"档案柜"。',
+    termIds: ['database', 'backend'],
+  },
+  {
+    id: 'p-5', category: 'ai',
+    title: '不同模型效果差异大，怎么设计模型切换功能',
+    situation: '试了几个模型，发现不同模型写出来的东西风格和质量差异很大。想在产品里加模型切换，但不确定怎么设计比较好。',
+    prompt: '我想在产品里加模型切换功能。\n帮我设计一下：\n1. 模型列表放在哪里管理（配置文件？数据库？）\n2. 不同模型的 API 格式不一样，怎么做统一适配\n3. 切换模型后，系统提示词要不要跟着变\n4. 要不要给每个模型加一个简短的说明，让用户知道各自的特点',
+    why: '这是产品架构设计的问题。核心思路是"统一调用层"——不管底层用的是 Claude、GPT 还是 GLM，对上层来说调用方式都一样。模型列表放配置文件里，以后加新模型只改配置不改代码。系统提示词建议所有模型共用一套，但可以针对不同模型微调。给用户加模型说明是好的产品设计——让用户知道"快但一般"和"慢但好"的区别。',
+    termIds: ['model', 'api', 'system-prompt'],
+  },
+
+  // ===== Vibe Coding 过程中会遇到的问题 =====
+  {
+    id: 'v-1', category: 'general',
+    title: 'AI 改了代码但我想看懂它改了什么',
+    situation: 'AI 帮你改了一些代码，你有编程基础，想看懂改动，确认改得对不对。',
+    prompt: '你刚才改了哪些文件？每个文件改了什么？\n用简单的话解释一下每处改动的目的。',
+    why: '有编程基础的好处是你能看懂代码逻辑，只是不熟悉 Web 的语法。让 AI 解释每处改动的目的，你就能判断改得对不对。不需要自己写代码，但能"审核"AI 写的代码——这是 Vibe Coding 的核心能力。',
+  },
+  {
+    id: 'v-2', category: 'general',
+    title: 'AI 越改越乱，代码开始出各种问题',
+    situation: '让 AI 改了好几轮，每次改一个问题又冒出新问题，感觉代码越来越乱。',
+    prompt: '现在代码改了好几轮，出了一些混乱。\n帮我做一次整理：\n1. 检查有没有重复的代码\n2. 检查有没有冲突的逻辑\n3. 把相关的代码整理到一起\n4. 更新项目文档，记录当前的代码结构',
+    why: '这是 Vibe Coding 最常见的问题——AI 每次只关注当前的修改，不会主动考虑全局一致性。改了几轮之后，代码可能出现重复、冲突、命名不统一等问题。解决办法是定期让 AI 做一次"整理"，就像房间住久了要收拾一下。另外，保持项目文档更新能帮 AI 维持对全局的理解。',
+  },
+  {
+    id: 'v-3', category: 'general',
+    title: 'npm install 报错了，一堆红色的信息',
+    situation: '按照步骤执行 npm install，但报了一堆错误，看不懂。',
+    prompt: '我执行 npm install 的时候报错了，错误信息是：\n[把红色的错误信息粘贴过来]\n帮我看看是什么原因，怎么解决。',
+    why: 'npm install 就是"下载项目需要的工具库"。报错通常是因为：网络问题（下载不了）、版本冲突（两个库要求不同版本的同一个东西）、或者系统缺少某个工具。把完整的错误信息给 AI，它能帮你定位原因。关键是粘贴完整的错误信息，不要只说"报错了"。',
+    termIds: ['dependency'],
+  },
+  {
+    id: 'v-4', category: 'frontend',
+    title: '页面在自己电脑上正常，但在手机上显示不对',
+    situation: '在电脑浏览器上看着挺好，但用手机打开，布局全乱了。',
+    prompt: '页面在电脑上显示正常，但在手机上布局乱了。\n帮我做移动端适配，在手机上左右面板改成上下布局。\n保持功能不变。',
+    why: '电脑屏幕宽，手机屏幕窄。同样的布局在不同宽度的屏幕上表现不同。"移动端适配"就是让页面能根据屏幕宽度自动调整布局。这在 Web 开发里叫"响应式设计"——一套代码适配多种屏幕。',
+    termIds: ['frontend'],
+  },
+  {
+    id: 'v-5', category: 'backend',
+    title: '想理解项目的整体架构，不想完全黑盒',
+    situation: '不想完全当甩手掌柜，想理解项目的核心逻辑——数据怎么流转的、各模块怎么配合的。',
+    prompt: '帮我梳理一下当前项目的架构：\n1. 用户的操作是怎么一步步传到 AI 的\n2. AI 的结果是怎么一步步显示在页面上的\n3. 文件上传的数据流是怎样的\n4. 各个模块之间的关系',
+    why: '理解架构不需要读每一行代码。让 AI 梳理数据流，你就能看到全局——用户点了什么、数据经过了哪些环节、最终到了哪里。这就像看一张地图，你不需要走遍每条路，但你知道从 A 到 B 要经过哪些地方。有编程基础的话，这种模块化思维应该很熟悉。',
+    termIds: ['frontend', 'backend', 'api'],
+  },
+];
+
+// ========== Trae 小技巧 ==========
+
+export const TRAE_TIPS: TraeTip[] = [
+  {
+    id: 't-1',
+    title: '拖图片进聊天框，AI 直接看图改页面',
+    oneLiner: '不用描述半天，截图或设计稿拖进去，AI 就能看懂你想要什么效果。',
+    detail: '跟 AI 说"把页面改成这个样子"，不如直接给它看。Trae 支持把图片拖进聊天框，AI 能识别图片内容并据此修改代码。设计稿、竞品截图、手绘草图都行。',
+    link: 'https://forum.trae.cn/t/topic/11218',
+    linkLabel: '查看 Pencil 设计插件教程',
+  },
+  {
+    id: 't-2',
+    title: '让 AI 先复述理解，再动手',
+    oneLiner: '发任务前加一句"先说说你的理解"，避免 AI 瞎猜跑偏。',
+    detail: '在给 AI 布置任务前，先让它复述一遍对任务的理解。如果理解有偏差，当场纠正比做完再改省十倍时间。可以在消息开头加："先分析我的需求，用你的话复述你的理解，确认后再动手。"',
+    link: 'https://forum.trae.cn/t/topic/12664',
+    linkLabel: '查看提示词分享',
+  },
+  {
+    id: 't-3',
+    title: '把常用规范写成 Rules，AI 自动遵守',
+    oneLiner: '团队有代码规范？写进 Rules 文件，AI 每次都会自动遵守，不用反复提醒。',
+    detail: '在项目的 .trae/rules/ 目录下创建规则文件，写上团队的命名规范、代码风格、注释要求等。AI 每次对话都会自动加载这些规则。建议按模块拆分：硬性规范一个文件、业务逻辑一个文件，按需加载更省 Token。',
+    link: 'https://forum.trae.cn/t/topic/1265',
+    linkLabel: '查看规则使用技巧',
+  },
+  {
+    id: 't-4',
+    title: '重复流程封装成 Skills，一句话触发',
+    oneLiner: '固定步骤的任务（写文档、做分析、生成代码）封装成 Skill，以后一句话搞定。',
+    detail: '在 Trae 的 Solo 模式下，可以把重复性工作封装成 Skill。比如"每次新建页面都要创建组件、写路由、加样式文件"，做成 Skill 后一句话触发。创建时用自然语言描述步骤就行，Trae 会自动生成。',
+    link: 'https://forum.trae.cn/t/topic/809',
+    linkLabel: '查看 Skills 使用指南',
+  },
+  {
+    id: 't-5',
+    title: '提示词先润色再发，效果翻倍',
+    oneLiner: '同样的意思，换个说法，AI 给的结果质量天差地别。',
+    detail: '发给 AI 的话就是提示词。模糊的描述会得到模糊的结果。技巧：把你想说的先丢给网页版 AI 润色一遍，变成清晰、结构化的表述再发。另外建议建一个文档专门存好用的提示词，下次类似任务直接复用。',
+    link: 'https://forum.trae.cn/t/topic/2000',
+    linkLabel: '查看完整工作流分享',
+  },
+  {
+    id: 't-6',
+    title: '一次只让 AI 做一件事',
+    oneLiner: '别在一条消息里塞三个需求，AI 会顾此失彼。',
+    detail: '"帮我做评论功能，顺便改一下登录页，再加个搜索"——这种消息 AI 大概率做不好。每次只给一个明确的任务，做完确认没问题再给下一个。就像给员工派活，一次派一件，件件有交代。',
+    link: 'https://forum.trae.cn/t/topic/2000',
+    linkLabel: '查看开发技巧',
+  },
+  {
+    id: 't-7',
+    title: 'AI 搞不定？换个模型试试',
+    oneLiner: '不同模型擅长的东西不一样，这个不行换那个，成本最低。',
+    detail: 'Trae 支持切换不同的 AI 模型。Claude 搞不定的任务，GPT 可能一下就通了，反过来也一样。还可以自定义接入更多模型（讯飞、Kimi、OpenRouter 等）。遇到卡住的任务，先换模型试，比死磕提示词更高效。',
+    link: 'https://forum.trae.cn/t/topic/11480',
+    linkLabel: '查看自定义模型教程',
+  },
+  {
+    id: 't-8',
+    title: 'AI 越改越乱？让它做一次"大扫除"',
+    oneLiner: '改了好几轮代码开始出问题，让 AI 停下来整理一遍。',
+    detail: 'AI 每次只关注当前修改，改几轮后容易出现重复代码、逻辑冲突。这时候别继续加需求，先让 AI 做一次整理："检查有没有重复代码、冲突逻辑，整理一下，更新项目文档。"就像房间住久了要收拾。',
+    link: 'https://forum.trae.cn/t/topic/2000',
+    linkLabel: '查看维护技巧',
+  },
+  {
+    id: 't-9',
+    title: 'AI 生成的东西，花两分钟扫一眼',
+    oneLiner: '不用看懂代码，但功能描述对不对、流程对不对，你能判断。',
+    detail: 'AI 生成的文档和代码不要直接跳过。你不需要看懂每一行技术细节，但"功能是不是你要的""流程对不对""有没有漏掉需求"这些用大白话写的部分你能判断。越早发现问题，改起来越便宜。',
+    link: 'https://forum.trae.cn/t/topic/12885',
+    linkLabel: '查看 PM 协作经验',
+  },
+];
+
+// ===== 问题分类 =====
+export const CATEGORY_INFO: Record<string, { label: string; color: string; icon: string; description: string }> = {
+  frontend: { label: '前端问题', color: 'pink', icon: 'palette', description: '页面样式、交互、显示相关' },
+  backend: { label: '后端问题', color: 'blue', icon: 'server', description: '文件处理、数据逻辑相关' },
+  ai: { label: 'AI 相关', color: 'purple', icon: 'brain', description: '模型、提示词、生成质量相关' },
+  deploy: { label: '部署上线', color: 'cyan', icon: 'cloud', description: '服务器、域名、安全相关' },
+  general: { label: '通用', color: 'yellow', icon: 'zap', description: '项目管理、排查问题' },
 };
-
-export const DEMO_OUTPUTS: DemoOutput[] = [
-  {
-    name: '列表按钮打开"其他信息"表单',
-    desc: '列表自定义点击事件 limengshabi，打开党员其他信息表单',
-    lines: 26,
-    rounds: 2,
-    myWords: [
-      { round: 1, text: '列表 241011153457h9oDes5p3yoJZxsNBDg 需要增加一个自定义点击事件，点击后打开该党员的「其他信息」表单。' },
-      { round: 2, text: '按钮名称是 limengshabi，表单 ID 你自己搜索去。' },
-    ],
-    skillsUsed: ['p2340-form-dev/skill.md', 'p2340-form-dev/reference/form-events.md', 'p2340-form-dev/reference/code-templates.md', 'p2340-form-dev/reference/module-info-flow.md'],
-    aiSteps: [
-      '通过列表 ID 推导 JS 文件路径',
-      '读取同模块另一个列表 JS，发现已有 testopen 事件，提取代码模式',
-      '在模块 JS 目录下搜索「其他信息」关键字，定位表单 ID',
-      '复制 testopen 模式，替换事件名和表单 ID',
-      '代码插入到已有 custom1、custom2 事件之后',
-    ],
-    files: ['241011153457h9oDes5p3yoJZxsNBDg.js', '230111180941547caFAYhBEHB64wtll.js', '220805101528EEqOGE3F0vJngSpREmQ.js'],
-    note: '第一轮 AI 留了占位符（没主动搜索表单 ID），第二轮用户明确后一次完成。',
-  },
-  {
-    name: '列表过滤：只显示有身份证号的党员',
-    desc: '后端列表组件 setCustomWhere 添加 CARDID 非空过滤',
-    lines: 2,
-    rounds: 4,
-    myWords: [
-      { round: 1, text: '这个列表我需要进入的时候增加过滤条件。我只要有身份证的数据。' },
-      { round: 2, text: '自己搜索去。' },
-      { round: 3, text: '如果是管理员的话也需要过滤的' },
-    ],
-    skillsUsed: ['p2340-form-dev/skill.md', 'p2340-form-dev/reference/code-templates.md', 'p2340-form-dev/reference/backend-rules.md'],
-    aiSteps: [
-      '通过列表 ID 搜索代码，定位后端列表组件',
-      '搜索项目中「身份证」关键字，确认字段名为 CARDID',
-      '分析 setCustomWhere 方法中的管理员判断逻辑',
-      '将 CARDID IS NOT NULL 条件加在管理员判断之前',
-    ],
-    files: ['List_241011153457h9oDes5p3yoJZxsNBDg.java', 'PartyOrgMemberEntity.java', 'PartyOrgMemberDaoImpl.java', 'ProBaseCustomList.java'],
-    note: '第一轮 AI 反问了身份证字段名（不该问），第三轮用户发现管理员分支漏了过滤。',
-  },
-  {
-    name: 'Excel 导出：组织身份证导出',
-    desc: 'custom3 工具栏按钮 + Controller + Service + Excel 全链路',
-    lines: 87,
-    rounds: 1,
-    myWords: [
-      { round: 1, text: '列表需要增加一个自定义按钮3（custom3），功能是「身份证导出」，将有身份证号的党员数据导出为 Excel。' },
-    ],
-    skillsUsed: ['docs/05-excel-import-export.md', 'docs/06-frontend-development.md'],
-    aiSteps: [
-      '查阅 Excel 导出规范文档和前端按钮规范文档',
-      '搜索已有导出方法，提取导出模式',
-      '阅读 DAO 层，了解主表和关联表、可用字段',
-      '确定修改范围：Service 接口 + 实现 + Controller + 前端 JS',
-      '复制 memberExport 模式，简化为 4 列',
-      '前端 JS 添加 custom3 工具栏按钮',
-    ],
-    files: ['PartyOrgMemberService.java', 'PartyOrgMemberServiceImpl.java', 'PartyOrgMemberController.java', '241011153457h9oDes5p3yoJZxsNBDg.js'],
-    note: '一次性完成，无需额外交互。原因：需求明确、同模块已有可直接复制简化的模式。',
-  },
-  {
-    name: '依赖管理：pom.xml 新增依赖',
-    desc: 'pom.xml 新增 Apache POI 依赖',
-    lines: 6,
-    rounds: 1,
-    myWords: [{ round: 1, text: '项目缺少 Excel 导出的依赖，帮我加上。' }],
-    skillsUsed: ['dsfa-framework-rules'],
-    aiSteps: ['检查现有 pom.xml 依赖', '确认需要 Apache POI 相关依赖', '在对应模块的 pom.xml 中添加依赖声明'],
-    files: ['pom.xml'],
-  },
-];
-
-// ========== Skills Marketplace Links ==========
-
-export const SKILLS_MARKETPLACES = [
-  { name: 'Agent Skills Marketplace', url: 'https://agentskills.to', desc: '社区驱动的 Skills 市场，支持 Claude Code、Cursor、Amp 等' },
-  { name: 'Skill Registry', url: 'https://skillregistry.io', desc: 'SKILLS.md 文件注册中心，支持 Claude、ChatGPT 等' },
-  { name: 'Agent Skills Index', url: 'https://agentskillsindex.com', desc: 'Skills 索引目录' },
-  { name: 'askill.sh', url: 'https://askill.sh', desc: 'Skills 质量评分注册中心，按安全性、清晰度、可复用性评分' },
-];
