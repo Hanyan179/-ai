@@ -5,7 +5,7 @@ import SectionWrapper from './components/SectionWrapper';
 import DemoReportPage from './pages/demo-report/DemoReportPage';
 import EasyVibePage from './pages/easy-vibe/EasyVibePage';
 import PortfolioPage from './pages/portfolio/PortfolioPage';
-import { ArchitecturePage, ReportPage } from './pages';
+import { ArchitecturePage, FdeReportPage, ReportPage } from './pages';
 import ReactMarkdown from 'react-markdown';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -40,6 +40,7 @@ const pagePath: Record<string, string> = {
   portfolio: '/portfolio',
   architecture: '/architecture',
   'ai-report': '/ai-report',
+  fde: '/fde',
 };
 
 const componentReports: ReportEntry[] = [
@@ -88,6 +89,18 @@ const componentReports: ReportEntry[] = [
     status: '最新',
     group: 'AI 编程',
     date: '2026-05-15',
+    type: 'Report',
+    source: 'component',
+  },
+  {
+    page: 'fde',
+    label: 'AI FDE',
+    title: 'AI 最后一公里：未来世界需要 Forward Deployed Engineer',
+    eyebrow: 'AI Career Shift',
+    description: '面向企业管理者的 AI FDE 可视化报告，解释模型公司如何从卖模型转向帮客户跑通业务。',
+    status: '研究稿',
+    group: 'AI 职业演化',
+    date: '2026-05-17',
     type: 'Report',
     source: 'component',
   },
@@ -203,6 +216,7 @@ function pageFromPath(pathname: string): SitePage {
   if (path === '/portfolio') return 'portfolio';
   if (path === '/architecture') return 'architecture';
   if (path === '/ai-report') return 'ai-report';
+  if (path === '/fde') return 'fde';
   return 'home';
 }
 
@@ -662,6 +676,14 @@ export default function App() {
     return (
       <PageShell currentPage={currentPage} onNavigate={navigateTo}>
         <ReportPage />
+      </PageShell>
+    );
+  }
+
+  if (currentPage === 'fde') {
+    return (
+      <PageShell currentPage={currentPage} onNavigate={navigateTo}>
+        <FdeReportPage />
       </PageShell>
     );
   }
